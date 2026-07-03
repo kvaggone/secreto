@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - run: pnpm --filter @secreto/crypto run build
+      - run: pnpm --filter @secreto/lib run build
+      - run: pnpm --filter @secreto/app-client run build
+      - run: pnpm --filter @secreto/app-server run build:node
+
+      - name: Create release archive
+        run: |
+          mkdir -p dist
+          cp packages/app-server/dist-node/index.cjs dist/
+          cp -r packages/app-client/dist dist/public
+          tar -czf secreto-${{ github.ref_name }}.tar.gz dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: secreto-${{ github.ref_name }}.tar.gz
+          generate_release_notes: true
