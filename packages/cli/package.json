@@ -1,56 +1,25 @@
 {
-  "name": "@secreto/cli",
+  "name": "secreto-cli",
+  "version": "0.1.0",
+  "description": "CLI for Secreto — send and receive encrypted notes from your terminal",
+  "homepage": "https://secreto.info",
+  "repository": "https://github.com/kvaggone/secreto",
+  "license": "MIT",
   "type": "module",
-  "version": "1.16.0",
-  "packageManager": "pnpm@9.15.0",
-  "description": "Enclosed cli to create secure notes.",
-  "author": "Corentin Thomasset <corentinth@proton.me> (https://corentin.tech)",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/CorentinTh/enclosed"
-  },
-  "main": "./dist/cli.cjs",
-  "module": "./dist/cli.mjs",
   "bin": {
-    "enclosed": "./bin/enclosed.mjs"
-  },
-  "files": [
-    "dist"
-  ],
-  "engines": {
-    "node": ">=22.0.0"
+    "secreto": "./dist/index.js"
   },
   "scripts": {
-    "dev": "tsx ./src/cli.ts",
-    "build": "unbuild",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "test": "pnpm run test:unit",
-    "test:unit": "vitest run",
-    "test:unit:watch": "vitest watch",
-    "prepublishOnly": "pnpm run build",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc",
+    "dev": "tsx src/index.ts"
   },
   "dependencies": {
-    "@secreto/lib": "workspace:*",
-    "@inquirer/prompts": "^6.0.0",
-    "citty": "^0.1.6",
-    "conf": "^13.0.1",
-    "lodash-es": "^4.17.21",
-    "ora": "^8.1.0",
-    "picocolors": "^1.0.1",
-    "zod": "^3.23.8"
+    "commander": "^12.0.0",
+    "chalk": "^5.3.0",
+    "@secreto/lib": "workspace:*"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "catalog:",
-    "@types/lodash-es": "^4.17.12",
-    "@vitest/coverage-v8": "catalog:",
-    "dotenv": "^16.4.5",
-    "eslint": "catalog:",
-    "tsx": "catalog:",
-    "typescript": "catalog:",
-    "unbuild": "^2.0.0",
-    "vitest": "catalog:"
+    "typescript": "^5.4.0",
+    "tsx": "^4.7.0"
   }
 }
