@@ -1,81 +1,55 @@
-# Enclosed CLI
+# secreto-cli
 
-This package contains the CLI for [Enclosed](https://enclosed.cc), an open-source project that aims to provide a simple and secure way to share e2e encrypted notes.
+CLI for [Secreto](https://secreto.info) — send and receive end-to-end encrypted notes from your terminal.
 
-## Getting Started
+Notes are encrypted client-side before being sent. The server only ever sees ciphertext; the decryption key lives exclusively in the URL fragment and never leaves your machine.
 
-To install the CLI, run the following command:
-
-### Create a note
+## Install
 
 ```bash
-# Basic usage
-enclosed create "Hello, World!"
-
-# Using stdin
-cat file.txt | enclosed create
-
-# With full options
-enclosed create --deleteAfterReading --password "password" --ttl 3600 "Hello, World!"
-```
-
-### Configure the enclosed instance to use
-
-```bash
-# By default, the CLI uses the public instance at enclosed.cc
-enclosed config set instance-url https://enclosed.cc
+npm install -g secreto-cli
 ```
 
 ## Usage
 
-```bash
-enclosed <command> [options]
-```
-
-### Create a note
+### Send a note
 
 ```bash
-# Basic usage
-enclosed create "Hello, World!"
+# Send text directly
+secreto send "Hello, world!"
 
-# Using stdin
-cat file.txt | enclosed create --stdin
-# or
-cat file.txt | enclosed create -s
+# Send a file
+secreto send --file secret.txt
 
-# To add files as attachments
-enclosed create --file file1.txt --file file2.txt "Hello, World!"
+# Set expiration (1h | 1d | 1w | 1m, default: 1d)
+secreto send --ttl 1h "Expires in an hour"
 
-# With full options
-enclosed create --file file1.txt --deleteAfterReading --password "password" --ttl 3600 "Hello, World!"
+# Burn after reading (delete on first view)
+secreto send --burn "This self-destructs"
 
-# Get more information about the command
-enclosed create --help
-# or
-enclosed create -h
+# Add password protection (prompts if you omit the value)
+secreto send --password "my-pass" "Protected note"
+secreto send --password "Combined options" --ttl 1w --burn
 ```
 
-### View a note
+The command prints a shareable URL like:
+
+```
+https://secreto.info/abc123#dar:encryptionKey
+```
+
+### Fetch a note
 
 ```bash
-# The password will be prompted if the note is password-protected
-enclosed view <note-url>
+# Fetch and print a note
+secreto get "https://secreto.info/abc123#encryptionKey"
 
-# Or you can provide the password directly
-enclosed view --password "password" <note-url>
+# Provide password directly (or omit to be prompted)
+secreto get --password "my-pass" "https://secreto.info/abc123#pw:encryptionKey"
 ```
 
-### Configure the enclosed instance to use
+### Version
 
 ```bash
-# By default, the CLI uses the public instance at enclosed.cc
-enclosed config set instance-url https://enclosed.cc
+secreto --version
 ```
-
-## License
-
-This project is licensed under the Apache 2.0 License. See the [LICENSE](./LICENSE) file for more information.
-
-## Credits and Acknowledgements
-
-This project is crafted with ❤️ by [Corentin Thomasset](https://corentin.tech).
