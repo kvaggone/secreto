@@ -212,26 +212,12 @@ export const Footer: Component = () => {
   return (
     <div class="bg-surface border-t border-border py-6 px-6 text-center text-muted-foreground flex flex-col sm:flex-row items-center justify-center gap-1">
       <div>
-        {t('footer.crafted-by')}
-        {' '}
-        <Button variant="link" as="a" href="https://corentin.tech" target="_blank" class="p-0 text-muted-foreground underline hover:text-primary transition font-normal h-auto">Corentin Thomasset</Button>
-        .
-      </div>
-      <div>
-        {t('footer.source-code')}
-        {' '}
-        <Button variant="link" as="a" href="https://github.com/CorentinTh/enclosed" target="_blank" class="p-0 text-muted-foreground underline hover:text-primary transition font-normal h-auto">{t('footer.github')}</Button>
-        .
-      </div>
-
-      <div>
         {t('footer.version')}
         {' '}
         <Button variant="link" as="a" href={`https://github.com/CorentinTh/enclosed/tree/v${buildTimeConfig.enclosedVersion}`} target="_blank" class="p-0 text-muted-foreground underline hover:text-primary transition font-normal h-auto">
           v
           {buildTimeConfig.enclosedVersion}
         </Button>
-
       </div>
     </div>
   );
