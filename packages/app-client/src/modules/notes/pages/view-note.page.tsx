@@ -12,7 +12,7 @@ import { formatBytes, safely, safelySync } from '@corentinth/chisels';
 import { decryptNote, noteAssetsToFiles, parseNoteUrlHashFragment } from '@secreto/lib';
 import { useLocation, useNavigate, useParams } from '@solidjs/router';
 import JSZip from 'jszip';
-import { type Component, createSignal, type JSX, Match, onCleanup, onMount, Show, Switch } from 'solid-js';
+import { type Component, createEffect, createSignal, type JSX, Match, onCleanup, onMount, Show, Switch } from 'solid-js';
 import {
   fetchNoteById,
   fetchNoteExists,
@@ -241,6 +241,27 @@ export const ViewNotePage: Component = () => {
   // Tick every second so the countdown updates live.
   const countdownInterval = setInterval(() => setNow(Date.now()), 1000);
   onCleanup(() => clearInterval(countdownInterval));
+
+  // Once the expiration date is reached, wipe the note from memory/DOM
+  // instead of leaving it displayed indefinitely in a tab left open.
+  createEffect(() => {
+    const expiration = getExpirationDate();
+    if (!expiration || getNow() < new Date(expiration).getTime()) {
+      return;
+    }
+
+    if (!getDecryptedNote() && fileAssets().length === 0 && !getNote()) {
+      return;
+    }
+
+    setDecryptedNote(null);
+    setFileAssets([]);
+    setNote(null);
+    setError({
+      title: t('view.error.note-not-found.title'),
+      description: t('view.error.note-not-found.description'),
+    });
+  });
 
   const pad = (n: number) => n.toString().padStart(2, '0');
 
