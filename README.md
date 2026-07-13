@@ -36,7 +36,7 @@ The whole UI has been tuned for small screens. Creating and reading notes on a p
 ## What's coming
 
 - Continued UI/UX improvements — we're not done yet
-- **secreto-cli** — a command-line tool to create and read notes from your terminal (coming soon)
+- **secreto-cli** — a command-line tool to create and read notes from your terminal ([npm install -g secreto-cli](https://www.npmjs.com/package/secreto-cli))
 - AI integrations — smart features that fit naturally into the encrypted-note workflow
 
 ---
@@ -58,7 +58,7 @@ environment:
   PUBLIC_SITE_URL: https://your-domain.com
 ```
 
-See [Enclosed's configuration docs](https://docs.enclosed.cc/self-hosting/configuration) for the full list of environment variables — they all work here too.
+See [configuration docs](https://docs.secreto.info/self-hosting/configuration) for the full list of environment variables.
 
 ---
 
