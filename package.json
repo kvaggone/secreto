@@ -1,6 +1,6 @@
 {
   "name": "secreto",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "description": "Send private and secure notes — end-to-end encrypted",
   "homepage": "https://secreto.info",
   "packageManager": "pnpm@9.15.0",

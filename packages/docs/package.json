@@ -1,7 +1,7 @@
 {
   "name": "@secreto/docs",
   "type": "module",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "packageManager": "pnpm@9.15.0",
   "description": "Documentation website for Secreto.",
   "author": "Corentin Thomasset <corentinth@proton.me> (https://corentin.tech)",
