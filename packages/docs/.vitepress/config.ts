@@ -65,6 +65,7 @@ export default defineConfig({
         items: [
           { text: 'Introduction', link: '/' },
           { text: 'How it works?', link: '/how-it-works' },
+          { text: 'Architecture & Deployment', link: '/architecture' },
         ],
       },
       {
