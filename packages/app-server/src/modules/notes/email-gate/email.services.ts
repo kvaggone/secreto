@@ -4,7 +4,7 @@ export { sendOtpEmail, sendNoAccessEmail };
 
 async function sendNoAccessEmail({ to }: { to: string }): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? 'Secret Manager <noreply@mail.aggone.net>';
+  const from = process.env.EMAIL_FROM ?? 'SECRETO.INFO <noreply@secreto.info>';
 
   if (!apiKey) {
     throw new Error('RESEND_API_KEY is not configured');
@@ -30,7 +30,7 @@ async function sendNoAccessEmail({ to }: { to: string }): Promise<void> {
         <div style="font-family:sans-serif;max-width:420px;margin:0 auto;padding:24px">
           <h2 style="margin:0 0 8px">No access</h2>
           <p style="color:#555;margin:0 0 16px">
-            Someone tried to open a private note on Secret Manager using this
+            Someone tried to open a private note on Secreto using this
             email address, but it isn't on the list of allowed recipients —
             so access was denied. No note content was shared.
           </p>
@@ -63,7 +63,7 @@ async function sendOtpEmail({
   code: string;
 }): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? 'Secret Manager <noreply@mail.aggone.net>';
+  const from = process.env.EMAIL_FROM ?? 'SECRETO.INFO <noreply@secreto.info>';
 
   if (!apiKey) {
     throw new Error('RESEND_API_KEY is not configured');
@@ -90,7 +90,7 @@ async function sendOtpEmail({
         <div style="font-family:sans-serif;max-width:420px;margin:0 auto;padding:24px">
           <h2 style="margin:0 0 8px">Access code</h2>
           <p style="color:#555;margin:0 0 20px">
-            Someone shared a private note with you on Secret Manager.
+            Someone shared a private note with you on Secreto.
             Use the code below to view it.
           </p>
           <div style="font-size:36px;font-weight:700;letter-spacing:10px;

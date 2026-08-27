@@ -1,12 +1,18 @@
 services:
-  enclosed:
-    image: corentinth/enclosed
+  secreto:
+    image: ghcr.io/kvaggone/secreto:latest
+    container_name: secreto
     ports:
       - 8787:8787
     volumes:
-      - enclosed-data:/app/.data
+      - secreto-data:/app/.data
+    environment:
+      PUBLIC_SITE_URL: https://your-domain.com
+      # Sender identity for OTP / access-gate emails (must be a Resend-verified domain).
+      EMAIL_FROM: SECRETO.INFO <noreply@secreto.info>
+      # RESEND_API_KEY: set via your secrets manager, not committed here
     restart: unless-stopped
 
 volumes:
-  enclosed-data:
+  secreto-data:
     driver: local

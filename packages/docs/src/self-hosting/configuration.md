@@ -4,13 +4,23 @@ import { data } from '../data/configuration.data.ts'
 
 # Self-Host Configuration
 
-Configuring your self-hosted instance of Enclosed allows you to customize the application to better suit your environment and requirements. This guide covers the key environment variables you can set to control various aspects of the application, including port settings, security options, and storage configurations.
+Configuring your self-hosted instance of Secreto allows you to customize the application to better suit your environment and requirements. This guide covers the key environment variables you can set to control various aspects of the application, including port settings, security options, and storage configurations.
 
 ## Environment Variables
 
-Enclosed is configured primarily through environment variables. Below is a list of the available variables, along with their descriptions and default values.
+Secreto is configured primarily through environment variables. Below is a list of the available variables, along with their descriptions and default values.
 
 <div v-html="data" />
+
+## Email Access Gate (OTP)
+
+The email access gate sends one-time codes and "no access" notices via [Resend](https://resend.com). These are configured with the following variables (read directly from the environment):
+
+| Environment variable | Documentation |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key used to send access-gate emails. Required for the email gate to work; without it, sending fails. |
+| `EMAIL_FROM` | Sender identity for access-gate emails, in the form `Name <address@domain>`. The domain must be verified in your Resend account. Default value: `SECRETO.INFO <noreply@secreto.info>`. |
+| `UNSUBSCRIBE_SECRET` | Secret used to sign one-click unsubscribe links. Falls back to `RESEND_API_KEY` if unset. |
 
 ## Optional: Native HTTPS Configuration
 
@@ -32,20 +42,20 @@ openssl pkcs12 -certpbe AES-256-CBC -export -out test_cert.pfx -inkey private-ke
 
 ## Applying Configuration Changes
 
-To apply your configuration changes, ensure that you have exported the environment variables in your shell or included them in your environment configuration file. Then, restart your Enclosed instance to apply the changes.
+To apply your configuration changes, ensure that you have exported the environment variables in your shell or included them in your environment configuration file. Then, restart your Secreto instance to apply the changes.
 
 For Docker deployments, you can pass the environment variables directly when running the container:
 
 ```bash
 docker run \
-    -d --name enclosed \
+    -d --name secreto \
     --restart unless-stopped \
     -p 8787:8787 \
     -v /path/to/local/data:/app/.data \
     -e SERVER_CORS_ORIGINS="https://example.com" \
-    ghcr.io/corentinth/enclosed
+    ghcr.io/kvaggone/secreto
 ```
 
 ## Next Steps
 
-Once your instance is configured, you can proceed to explore advanced deployment options or set up monitoring to ensure your Enclosed instance runs smoothly. For a more complex setup, consider using [Docker Compose](./docker-compose) or deploying on a cloud provider.
+Once your instance is configured, you can proceed to explore advanced deployment options or set up monitoring to ensure your Secreto instance runs smoothly. For a more complex setup, consider using [Docker Compose](./docker-compose) or deploying on a cloud provider.
