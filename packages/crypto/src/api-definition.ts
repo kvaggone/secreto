@@ -1,9 +1,9 @@
 import type { EncryptionAlgorithmDefinitions } from './encryption-algorithms/encryption-algorithms.types';
 import { createEncryptionAlgorithmsRegistry } from './encryption-algorithms/encryption-algorithms.registry';
 
-export { createEnclosedCryptoApi };
+export { createSecretoCryptoApi };
 
-function createEnclosedCryptoApi({
+function createSecretoCryptoApi({
   encryptionMethodDefinitions,
   ...api
 }: {

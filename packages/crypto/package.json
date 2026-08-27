@@ -3,12 +3,12 @@
   "type": "module",
   "version": "1.16.0",
   "packageManager": "pnpm@9.15.0",
-  "description": "Enclosed cross-env crypto primitives",
+  "description": "Secreto cross-env crypto primitives",
   "author": "Corentin Thomasset <corentinth@proton.me> (https://corentin.tech)",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CorentinTh/enclosed"
+    "url": "https://github.com/kvaggone/secreto"
   },
   "exports": {
     "./package.json": "./package.json",

@@ -1,4 +1,4 @@
-import { createEnclosedCryptoApi } from './api-definition';
+import { createSecretoCryptoApi } from './api-definition';
 import { AES_256_GCM } from './encryption-algorithms/encryption-algorithms.constants';
 import * as webCryptoApi from './web/crypto.web.usecases';
 import { aes256GcmEncryptionAlgorithmDefinition } from './web/encryption-algorithms/crypto.web.aes-256-gcm';
@@ -14,7 +14,7 @@ export const {
   getEncryptionMethod,
   base64UrlToBuffer,
   bufferToBase64Url,
-} = createEnclosedCryptoApi({
+} = createSecretoCryptoApi({
   ...webCryptoApi,
   encryptionMethodDefinitions: {
     [AES_256_GCM]: aes256GcmEncryptionAlgorithmDefinition,

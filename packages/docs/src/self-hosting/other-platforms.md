@@ -1,36 +1,24 @@
 # Deploy on other platforms
 
-## Railway
+Secreto is distributed as a standard OCI container image, so it runs on any platform that can pull and run a Docker image. Point your platform of choice at:
 
-To deploy Enclosed on Railway, you can use the following button to create a new pre-configured instance:
+```
+ghcr.io/kvaggone/secreto:latest
+```
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/5gOoRm?referralCode=CTHMSST)
+Expose port `8787` and mount a volume at `/app/.data` for persistent storage. See the [configuration guide](./configuration) for the available environment variables.
 
-## Umbrel
-
-To deploy Enclosed on umbrelOS, open the App Store on your umbrelOS home server and search for Enclosed.
-[App Store link](https://apps.umbrel.com/app/enclosed)
-
-## Cloudron
+## Platforms with one-click templates
 
 > [!INFO]
-> Not yet available. Please refer to the [GitHub issue](https://github.com/CorentinTh/enclosed/issues/87) for updates about Cloudron support.
+> Secreto is not yet packaged in any app store or one-click template catalogue (Railway, umbrelOS, Cloudron, RunTipi, Unraid, CasaOS). Templates published for the upstream [Enclosed](https://github.com/CorentinTh/enclosed) project deploy Enclosed, **not** Secreto — they do not include Secreto's email access gate, suppression list, or other additions.
 
-## RunTipi
+To run Secreto on those platforms today, use their generic "deploy from a Docker image" option with the image above.
 
-> [!INFO]
-> Not yet available. Please refer to the [GitHub issue](https://github.com/CorentinTh/enclosed/issues/88) for updates about RunTipi support.
+## Cloudflare Workers
 
-## Unraid
-
-> [!INFO]
-> Not yet available. Please refer to the [GitHub issue](https://github.com/CorentinTh/enclosed/issues/89) for updates about Unraid support.
-
-## CasaOS
-
-> [!INFO]
-> Not yet available. Please refer to the [GitHub issue](https://github.com/CorentinTh/enclosed/issues/261) for updates about CasaOS support.
+The repository includes a `@secreto/deploy-cloudflare` package for deploying to Cloudflare Workers with a KV-backed storage driver.
 
 ## Another platform?
 
-If you would like to see Enclosed available on another platform, please open an issue on the [GitHub repository](https://github.com/CorentinTh/enclosed/issues/new/choose) with the details of the platform you would like to see supported.
+If you would like to see Secreto packaged for another platform, please open an issue on the [GitHub repository](https://github.com/kvaggone/secreto/issues/new/choose) with the details of the platform you would like to see supported.

@@ -1,24 +1,24 @@
-### Enclosed lib
+### Secreto lib
 
-This package contains the core functionalities of [Enclosed](https://enclosed.cc/), an open-source project that aims to provide a simple and secure way to share e2e encrypted notes.
+This package contains the core functionalities of [Secreto](https://secreto.info/), an open-source project that aims to provide a simple and secure way to share e2e encrypted notes.
 
 ## Installation
 
 ```bash
 # with npm
-npm install @enclosed/lib
+npm install @secreto/lib
 
 # with yarn
-yarn add @enclosed/lib
+yarn add @secreto/lib
 
 # with pnpm
-pnpm add @enclosed/lib
+pnpm add @secreto/lib
 ```
 
 ## Usage
 
 ```javascript
-import { createNote } from '@enclosed/lib';
+import { createNote } from '@secreto/lib';
 
 const { noteUrl } = await createNote({
   content: 'Hello, World!',

@@ -8,7 +8,7 @@ Share secrets safely. End-to-end encrypted notes that self-destruct — now with
 
 ## What is Secreto?
 
-Secreto is a fork of [Enclosed](https://github.com/CorentinTh/enclosed) (v1.16.0, MIT) — a beautiful open-source tool for sharing end-to-end encrypted notes. The server never sees your plaintext; the decryption key lives only in the URL fragment.
+Secreto is a fork of [Enclosed](https://github.com/CorentinTh/enclosed) (v1.16.0, Apache-2.0) — a beautiful open-source tool for sharing end-to-end encrypted notes. The server never sees your plaintext; the decryption key lives only in the URL fragment.
 
 We took Enclosed and added features that matter for real-world use, with more on the way.
 
@@ -46,12 +46,14 @@ The whole UI has been tuned for small screens. Creating and reading notes on a p
 You need Docker and Docker Compose.
 
 ```bash
-git clone https://github.com/your-org/secreto.git
+git clone https://github.com/kvaggone/secreto.git
 cd secreto
 docker compose up -d
 ```
 
-The app runs on port 8787 behind Caddy (ports 80/443 with automatic TLS). Edit `docker-compose.yml` to set your domain and other options:
+This pulls the prebuilt image from `ghcr.io/kvaggone/secreto`. To build it from source instead, run `pnpm docker:build` (or `pnpm docker:build:rootless` for the non-root variant).
+
+The app listens on port 8787. Put your own reverse proxy in front of it for TLS. Edit `docker-compose.yml` to set your domain and other options:
 
 ```yaml
 environment:
@@ -64,4 +66,4 @@ See [configuration docs](https://docs.secreto.info/self-hosting/configuration) f
 
 ## License
 
-Secreto is based on [Enclosed](https://github.com/CorentinTh/enclosed) by Corentin Th, licensed under the [MIT License](LICENSE).
+Secreto is based on [Enclosed](https://github.com/CorentinTh/enclosed) by Corentin Th, licensed under the [Apache License 2.0](LICENSE).

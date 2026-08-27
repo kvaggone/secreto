@@ -5,6 +5,7 @@
 .cache
 .env
 node_modules
+**/node_modules
 logs
 *.log
 .DS_Store
@@ -16,3 +17,5 @@ logs
 .wrangler
 dist
 dist-*
+**/dist
+**/dist-*
