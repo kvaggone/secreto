@@ -12,7 +12,7 @@ export default defineConfig({
   ],
   define: {
     // package.json version
-    'import.meta.env.VITE_ENCLOSED_VERSION': JSON.stringify(process.env.npm_package_version),
+    'import.meta.env.VITE_SECRETO_VERSION': JSON.stringify(process.env.npm_package_version),
   },
   server: {
     port: 3000,

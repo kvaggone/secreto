@@ -1,4 +1,8 @@
 /* TEAM */
-Developer: Corentin Thomasset
+Secreto: https://secreto.info
+Repository: https://github.com/kvaggone/secreto
+
+/* BASED ON */
+Enclosed by Corentin Thomasset
 Site: https://corentin.tech
 Twitter: @cthmsst

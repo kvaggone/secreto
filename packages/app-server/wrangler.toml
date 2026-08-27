@@ -1,4 +1,4 @@
-name = "enclosed-app"
+name = "secreto-app"
 compatibility_date = "2024-08-20"
 pages_build_output_dir = "./dist"
 

@@ -21,10 +21,10 @@ RUN npm install -g pnpm --ignore-scripts && pnpm install --frozen-lockfile --ign
 COPY . .
 
 # Build the apps
-RUN pnpm --filter @enclosed/crypto run build && \
-    pnpm --filter @enclosed/lib run build && \
-    pnpm --filter @enclosed/app-client run build && \
-    pnpm --filter @enclosed/app-server run build:node
+RUN pnpm --filter @secreto/crypto --fail-if-no-match run build && \
+    pnpm --filter @secreto/lib --fail-if-no-match run build && \
+    pnpm --filter @secreto/app-client --fail-if-no-match run build && \
+    pnpm --filter @secreto/app-server --fail-if-no-match run build:node
 
 # Production image 
 FROM node:22-alpine

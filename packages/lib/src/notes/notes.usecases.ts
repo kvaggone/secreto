@@ -7,7 +7,7 @@ import { storeNote as storeNoteImpl } from './notes.services';
 
 export { createNote };
 
-const BASE_URL = 'https://enclosed.cc';
+const BASE_URL = 'https://secreto.info';
 
 async function createNote({
   content,

@@ -41,8 +41,8 @@ body:
     attributes:
       label: Where did you encounter the bug?
       options:
-        - Public app (enclosed.cc)
-        - Documentation website (docs.enclosed.cc)
+        - Public app (secreto.info)
+        - Documentation website (docs.secreto.info)
         - A self hosted instance
         - Other (installations, docker, etc.)
     validations:

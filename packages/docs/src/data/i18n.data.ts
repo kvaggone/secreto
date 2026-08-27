@@ -51,7 +51,7 @@ const mdTable = [
     name,
     key,
     `${isComplete ? '✅' : '🚧'} ${(ratio * 100).toFixed(0)}% - ${keyCount} / ${defaultLocaleKeyCount}`,
-    `[See translation file](https://github.com/CorentinTh/enclosed/blob/main/packages/app-client/src/locales/${key}.json)`,
+    `[See translation file](https://github.com/kvaggone/secreto/blob/main/packages/app-client/src/locales/${key}.json)`,
   ].join(' | ')} |`),
 
 ].join('\n');

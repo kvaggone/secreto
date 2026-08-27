@@ -15,8 +15,9 @@
   },
   "scripts": {
     "release": "bumpp --commit --tag --push --recursive",
-    "docker:build": "docker build -t enclosed .",
-    "docker:run": "docker run -d -p 8788:8787 enclosed"
+    "docker:build": "docker build -t secreto .",
+    "docker:build:rootless": "docker build -f Dockerfile.rootless -t secreto:rootless .",
+    "docker:run": "docker run -d -p 8788:8787 secreto"
   },
   "keywords": [
     "note",
