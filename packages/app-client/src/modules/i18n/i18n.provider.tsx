@@ -46,7 +46,7 @@ export const I18nProvider: ParentComponent = (props) => {
     preferredLocales: navigator.languages.map(x => new Intl.Locale(x)),
     supportedLocales: locales.map(x => new Intl.Locale(x.key)),
   });
-  const [getLocale, setLocale] = makePersisted(createSignal<Locale>(browserLocale), { name: 'enclosed_locale', storage: localStorage });
+  const [getLocale, setLocale] = makePersisted(createSignal<Locale>(browserLocale), { name: 'secreto_locale', storage: localStorage });
 
   const [dict] = createResource(getLocale, fetchDictionary);
 

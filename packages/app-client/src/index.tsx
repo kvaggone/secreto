@@ -14,7 +14,7 @@ import './app.css';
 render(
   () => {
     const initialColorMode = 'system';
-    const colorModeStorageKey = 'enclosed_color_mode';
+    const colorModeStorageKey = 'secreto_color_mode';
     const localStorageManager = createLocalStorageManager(colorModeStorageKey);
 
     return (
