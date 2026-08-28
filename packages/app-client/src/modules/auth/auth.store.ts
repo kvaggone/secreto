@@ -4,9 +4,9 @@ import { createHook } from '../shared/hooks/hooks';
 import { isAccessTokenExpired } from './auth.models';
 
 export const authStore = createRoot(() => {
-  const [getAccessToken, setAccessTokenValue] = makePersisted(createSignal<string | null>(null), { name: 'enclosed_access_token', storage: localStorage });
+  const [getAccessToken, setAccessTokenValue] = makePersisted(createSignal<string | null>(null), { name: 'secreto_access_token', storage: localStorage });
   const onAuthChangeHook = createHook<{ isAuthenticated: boolean }>();
-  const [getRedirectUrl, setRedirectUrl] = makePersisted(createSignal<string | null>(null), { name: 'enclosed_redirect_url', storage: localStorage });
+  const [getRedirectUrl, setRedirectUrl] = makePersisted(createSignal<string | null>(null), { name: 'secreto_redirect_url', storage: localStorage });
 
   const getIsAuthenticated = () => {
     const accessToken = getAccessToken();

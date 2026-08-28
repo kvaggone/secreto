@@ -214,7 +214,7 @@ export const Footer: Component = () => {
       <div>
         {t('footer.version')}
         {' '}
-        <Button variant="link" as="a" href={`https://github.com/CorentinTh/enclosed/tree/v${buildTimeConfig.secretoVersion}`} target="_blank" class="p-0 text-muted-foreground underline hover:text-primary transition font-normal h-auto">
+        <Button variant="link" as="a" href={`https://github.com/kvaggone/secreto/tree/v${buildTimeConfig.secretoVersion}`} target="_blank" class="p-0 text-muted-foreground underline hover:text-primary transition font-normal h-auto">
           v
           {buildTimeConfig.secretoVersion}
         </Button>
