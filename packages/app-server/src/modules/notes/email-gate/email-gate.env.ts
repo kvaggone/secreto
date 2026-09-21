@@ -4,6 +4,7 @@ export type { EmailGateEnv };
 type EmailGateEnv = {
   resendApiKey?: string;
   emailFrom: string;
+  emailReplyTo?: string;
   supabaseUrl?: string;
   supabaseServiceKey?: string;
   unsubscribeSecret?: string;
@@ -33,6 +34,8 @@ function getEmailGateEnv(c: any): EmailGateEnv {
   return {
     resendApiKey: env.RESEND_API_KEY || undefined,
     emailFrom: env.EMAIL_FROM || 'SECRETO.INFO <noreply@secreto.info>',
+    // 'none' omits the Reply-To header entirely.
+    emailReplyTo: env.EMAIL_REPLY_TO === 'none' ? undefined : (env.EMAIL_REPLY_TO || 'support@agg.one'),
     supabaseUrl: env.SUPABASE_URL?.replace(/\/$/, '') || undefined,
     supabaseServiceKey: env.SUPABASE_SERVICE_KEY || undefined,
     // Falls back to the Resend key so no extra config is required, but never to a hardcoded value.
