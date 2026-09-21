@@ -20,6 +20,7 @@ The email access gate sends one-time codes and "no access" notices via [Resend](
 | --- | --- |
 | `RESEND_API_KEY` | Resend API key used to send access-gate emails. Required for the email gate to work; without it, sending fails. |
 | `EMAIL_FROM` | Sender identity for access-gate emails, in the form `Name <address@domain>`. The domain must be verified in your Resend account. Default value: `SECRETO.INFO <noreply@secreto.info>`. |
+| `EMAIL_REPLY_TO` | Reply-To address for access-gate emails. Set to `none` to omit the header. Default value: `support@agg.one`. |
 | `UNSUBSCRIBE_SECRET` | Secret used to sign one-click unsubscribe links. Falls back to `RESEND_API_KEY` if unset. |
 
 ## Optional: Native HTTPS Configuration
