@@ -1,3 +1,4 @@
+import { getEmailGateEnv } from './email-gate.env';
 import { isEmailSuppressed } from './suppression.repository';
 
 export { registerEmailGateMiddleware };
@@ -40,9 +41,9 @@ function registerEmailGateMiddleware({ app }: { app: any }) {
     const emails: unknown = body?.allowedEmails;
 
     if (Array.isArray(emails) && emails.length > 0) {
-      const storage = c.get('storage');
+      const env = getEmailGateEnv(c);
       for (const email of emails) {
-        if (typeof email === 'string' && (await isEmailSuppressed({ storage, email }))) {
+        if (typeof email === 'string' && (await isEmailSuppressed({ env, email }))) {
           return c.json(
             {
               error: {

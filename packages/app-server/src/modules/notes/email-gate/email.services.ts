@@ -1,16 +1,16 @@
+import type { EmailGateEnv } from './email-gate.env';
 import { buildUnsubscribeUrl } from './unsubscribe.token';
 
 export { sendOtpEmail, sendNoAccessEmail };
 
-async function sendNoAccessEmail({ to }: { to: string }): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? 'SECRETO.INFO <noreply@secreto.info>';
+async function sendNoAccessEmail({ to, env }: { to: string; env: EmailGateEnv }): Promise<void> {
+  const { resendApiKey: apiKey, emailFrom: from } = env;
 
   if (!apiKey) {
     throw new Error('RESEND_API_KEY is not configured');
   }
 
-  const unsubscribeUrl = buildUnsubscribeUrl(to);
+  const unsubscribeUrl = buildUnsubscribeUrl(to, env);
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -58,18 +58,19 @@ async function sendNoAccessEmail({ to }: { to: string }): Promise<void> {
 async function sendOtpEmail({
   to,
   code,
+  env,
 }: {
   to: string;
   code: string;
+  env: EmailGateEnv;
 }): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? 'SECRETO.INFO <noreply@secreto.info>';
+  const { resendApiKey: apiKey, emailFrom: from } = env;
 
   if (!apiKey) {
     throw new Error('RESEND_API_KEY is not configured');
   }
 
-  const unsubscribeUrl = buildUnsubscribeUrl(to);
+  const unsubscribeUrl = buildUnsubscribeUrl(to, env);
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',

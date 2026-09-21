@@ -4,6 +4,7 @@ import { createNoteRepository } from '../notes.repository';
 import { getRefreshedNote } from '../notes.usecases';
 import { createOtpRepository } from './otp.repository';
 import { issueOtp, verifyOtp } from './otp.usecases';
+import { getEmailGateEnv, runInBackground } from './email-gate.env';
 import { sendOtpEmail, sendNoAccessEmail } from './email.services';
 import { isEmailSuppressed, suppressEmail } from './suppression.repository';
 import { verifyUnsubscribeToken } from './unsubscribe.token';
@@ -69,27 +70,26 @@ function registerEmailGateRoutes({ app }: { app: any }) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    const env = getEmailGateEnv(c);
     const allowed: string[] = rawNote.allowedEmails.map((e: string) => e.toLowerCase().trim());
 
     if (!allowed.includes(normalizedEmail)) {
       // 1Password-style: tell the typed address it doesn't have access — but only
       // once per (note, address) per hour, and never to opted-out addresses, to
       // avoid turning this into a spam relay.
-      if (!(await isEmailSuppressed({ storage, email: normalizedEmail }))) {
+      if (!(await isEmailSuppressed({ env, email: normalizedEmail }))) {
         const dedupeKey = `noaccess:${noteId}:${crypto.createHash('sha256').update(normalizedEmail).digest('hex').slice(0, 24)}`;
         const alreadyNotified = await (storage as any).getItem(dedupeKey);
         if (!alreadyNotified) {
           await (storage as any).setItem(dedupeKey, { at: new Date().toISOString() }, { ttl: 3600, expirationTtl: 3600 });
-          sendNoAccessEmail({ to: normalizedEmail }).catch((err: unknown) => {
-            console.error('[email-gate] Failed to send no-access email:', err);
-          });
+          runInBackground(c, sendNoAccessEmail({ to: normalizedEmail, env }), 'Failed to send no-access email');
         }
       }
       return c.json({ sent: true });
     }
 
     // Respect the suppression list even if the address was allow-listed before opting out.
-    if (await isEmailSuppressed({ storage, email: normalizedEmail })) {
+    if (await isEmailSuppressed({ env, email: normalizedEmail })) {
       return c.json({ sent: true });
     }
 
@@ -97,9 +97,7 @@ function registerEmailGateRoutes({ app }: { app: any }) {
     const { code } = await issueOtp({ otpRepository, noteId, email: normalizedEmail });
 
     // Fire-and-forget — do not expose email service errors to the caller
-    sendOtpEmail({ to: normalizedEmail, code }).catch((err: unknown) => {
-      console.error('[email-gate] Failed to send OTP email:', err);
-    });
+    runInBackground(c, sendOtpEmail({ to: normalizedEmail, code, env }), 'Failed to send OTP email');
 
     return c.json({ sent: true });
   });
@@ -161,7 +159,9 @@ function registerEmailGateRoutes({ app }: { app: any }) {
     const email = c.req.query('email') ?? '';
     const token = c.req.query('token') ?? '';
 
-    if (!email || !token || !verifyUnsubscribeToken(email, token)) {
+    const env = getEmailGateEnv(c);
+
+    if (!email || !token || !verifyUnsubscribeToken(email, token, env)) {
       return c.html(
         unsubscribePage({
           title: 'Invalid link',
@@ -171,8 +171,17 @@ function registerEmailGateRoutes({ app }: { app: any }) {
       );
     }
 
-    const storage = c.get('storage');
-    await suppressEmail({ storage, email });
+    const isSuppressed = await suppressEmail({ env, email });
+
+    if (!isSuppressed) {
+      return c.html(
+        unsubscribePage({
+          title: 'Something went wrong',
+          message: 'We could not record your opt-out right now. Please try again later or contact support@agg.one.',
+        }),
+        500,
+      );
+    }
 
     return c.html(
       unsubscribePage({
