@@ -1,4 +1,4 @@
-import { getEmailGateEnv } from './email-gate.env';
+import { getDb } from '../../db/db.client';
 import { isEmailSuppressed } from './suppression.repository';
 
 export { registerEmailGateMiddleware };
@@ -41,9 +41,9 @@ function registerEmailGateMiddleware({ app }: { app: any }) {
     const emails: unknown = body?.allowedEmails;
 
     if (Array.isArray(emails) && emails.length > 0) {
-      const env = getEmailGateEnv(c);
+      const db = await getDb(c);
       for (const email of emails) {
-        if (typeof email === 'string' && (await isEmailSuppressed({ env, email }))) {
+        if (typeof email === 'string' && (await isEmailSuppressed({ db, email }))) {
           return c.json(
             {
               error: {

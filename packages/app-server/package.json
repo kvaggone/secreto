@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "@corentinth/chisels": "catalog:",
-    "@secreto/lib": "workspace:*",
     "@hono/node-server": "^1.12.1",
+    "@secreto/lib": "workspace:*",
     "bcryptjs": "^2.4.3",
     "date-fns": "^4.0.0",
     "figue": "^2.1.0",
@@ -38,6 +38,7 @@
     "lodash-es": "^4.17.21",
     "node-cron": "^3.0.3",
     "pino": "^9.3.2",
+    "postgres": "^3.4.5",
     "ulid-workers": "^2.1.0",
     "unstorage": "^1.10.2",
     "zod": "^3.23.8"

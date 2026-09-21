@@ -1,94 +1,72 @@
-import type { EmailGateEnv } from './email-gate.env';
+import type { Db } from '../../db/db.client';
 
-export { isEmailSuppressed, suppressEmail };
+export { isEmailSuppressed, listSuppressedEmails, suppressEmail, unsuppressEmail };
 
-// Suppression list is stored in Supabase (Postgres) so it can be viewed/edited
-// from the Supabase dashboard without server access.
-//
-// Table:
-//   create table suppressed_emails (
-//     email text primary key,
-//     created_at timestamptz not null default now()
-//   );
-//
-// Accessed via the PostgREST endpoint using the service_role key (server-side only).
-// All operations FAIL SAFE: if Supabase is unconfigured or unreachable, suppression
-// is simply treated as "not suppressed" / a no-op, so note creation never breaks.
-
-const TABLE = 'suppressed_emails';
-
-type SuppressionEnv = Pick<EmailGateEnv, 'supabaseUrl' | 'supabaseServiceKey'>;
-
-function getConfig(env: SuppressionEnv): { url: string; key: string } | null {
-  const { supabaseUrl: url, supabaseServiceKey: key } = env;
-  if (!url || !key) {
-    return null;
-  }
-  return { url, key };
-}
-
-function authHeaders(key: string): Record<string, string> {
-  return {
-    'apikey': key,
-    'Authorization': `Bearer ${key}`,
-    'Content-Type': 'application/json',
-  };
-}
+// Suppression list (recipients who opted out) lives in the `suppressed_emails` table.
+// Lookups FAIL SAFE: without a database, addresses are treated as "not suppressed"
+// so note creation and access codes keep working.
 
 function normalize(email: string): string {
   return email.toLowerCase().trim();
 }
 
-async function isEmailSuppressed({ email, env }: { email: string; env: SuppressionEnv }): Promise<boolean> {
-  const config = getConfig(env);
-  if (!config) {
+async function isEmailSuppressed({ email, db }: { email: string; db: Db | null }): Promise<boolean> {
+  if (!db) {
     return false;
   }
 
   try {
-    const query = `${config.url}/rest/v1/${TABLE}?email=eq.${encodeURIComponent(normalize(email))}&select=email`;
-    const res = await fetch(query, { headers: authHeaders(config.key) });
-
-    if (!res.ok) {
-      console.error(`[suppression] lookup failed: ${res.status}`);
-      return false;
-    }
-
-    const rows = await res.json();
-    return Array.isArray(rows) && rows.length > 0;
+    const rows = await db`select 1 from suppressed_emails where email = ${normalize(email)} limit 1`;
+    return rows.length > 0;
   } catch (err) {
     console.error('[suppression] lookup error:', err);
     return false;
   }
 }
 
-async function suppressEmail({ email, env }: { email: string; env: SuppressionEnv }): Promise<boolean> {
-  const config = getConfig(env);
-  if (!config) {
-    console.error('[suppression] Supabase not configured; cannot record opt-out');
+async function suppressEmail({ email, db }: { email: string; db: Db | null }): Promise<boolean> {
+  if (!db) {
+    console.error('[suppression] database not configured; cannot record opt-out');
     return false;
   }
 
   try {
-    const res = await fetch(`${config.url}/rest/v1/${TABLE}`, {
-      method: 'POST',
-      headers: {
-        ...authHeaders(config.key),
-        // Idempotent: ignore if the email is already suppressed.
-        'Prefer': 'resolution=merge-duplicates,return=minimal',
-      },
-      body: JSON.stringify({ email: normalize(email) }),
-    });
-
-    if (!res.ok) {
-      const body = await res.text().catch(() => '');
-      console.error(`[suppression] insert failed: ${res.status} ${body}`);
-      return false;
-    }
-
+    await db`insert into suppressed_emails (email) values (${normalize(email)}) on conflict (email) do nothing`;
     return true;
   } catch (err) {
     console.error('[suppression] insert error:', err);
     return false;
   }
+}
+
+async function unsuppressEmail({ email, db }: { email: string; db: Db }): Promise<{ removed: boolean }> {
+  const rows = await db`delete from suppressed_emails where email = ${normalize(email)} returning email`;
+  return { removed: rows.length > 0 };
+}
+
+async function listSuppressedEmails({
+  db,
+  search,
+  page,
+  pageSize,
+}: {
+  db: Db;
+  search?: string;
+  page: number;
+  pageSize: number;
+}): Promise<{ items: { email: string; createdAt: string }[]; total: number }> {
+  const pattern = search ? `%${search.toLowerCase().trim().replace(/[\\%_]/g, char => `\\${char}`)}%` : null;
+  const where = pattern ? db`where email like ${pattern}` : db``;
+
+  const [{ total }] = await db<{ total: number }[]>`select count(*)::int as total from suppressed_emails ${where}`;
+  const rows = await db<{ email: string; created_at: Date }[]>`
+    select email, created_at from suppressed_emails ${where}
+    order by created_at desc, email
+    limit ${pageSize} offset ${(page - 1) * pageSize}
+  `;
+
+  return {
+    items: rows.map(row => ({ email: row.email, createdAt: row.created_at.toISOString() })),
+    total,
+  };
 }

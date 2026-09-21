@@ -23,6 +23,18 @@ The email access gate sends one-time codes and "no access" notices via [Resend](
 | `EMAIL_REPLY_TO` | Reply-To address for access-gate emails. Set to `none` to omit the header. Default value: `support@agg.one`. |
 | `UNSUBSCRIBE_SECRET` | Secret used to sign one-click unsubscribe links. Falls back to `RESEND_API_KEY` if unset. |
 
+## Database and admin area (optional)
+
+Secreto can use a PostgreSQL database for the email opt-out list and for anonymous note statistics (creation time, lifetime, burn-after-reading flag and number of email recipients; no note IDs, content or addresses). Tables are created automatically on startup. Without a database, notes and emails keep working, but opt-outs are not stored and statistics are unavailable.
+
+The admin area is available at `/admin` when `ADMIN_USERS` and `ADMIN_SESSION_SECRET` are set.
+
+| Environment variable | Documentation |
+| --- | --- |
+| `DATABASE_URL` | PostgreSQL connection string, like `postgres://user:password@host:5432/secreto`. |
+| `ADMIN_USERS` | Admin accounts. Comma-separated list of `email:bcryptHash`, same format as `AUTHENTICATION_USERS`. |
+| `ADMIN_SESSION_SECRET` | Secret used to sign admin sessions. At least 32 characters. |
+
 ## Optional: Native HTTPS Configuration
 
 If you want to use HTTPS without a reverse proxy, you can set the `SERVER_USE_HTTPS` environment variable to `true` and provide the necessary certificate and key files.

@@ -3,6 +3,7 @@ import type { Config } from './config/config.types';
 import type { ServerInstanceGenerics } from './server.types';
 import { Hono } from 'hono';
 import { secureHeaders } from 'hono/secure-headers';
+import { registerAdminRoutes } from '../admin/admin.routes';
 import { registerEmailGateMiddleware } from '../notes/email-gate/email-gate.middleware.js';
 import { registerEmailGateRoutes } from '../notes/email-gate/email-gate.routes.js';
 import { registerNotesRoutes } from '../notes/notes.routes';
@@ -33,6 +34,7 @@ function createServer({ config, storageFactory }: { config?: Config; storageFact
 
   registerAuthRoutes({ app });
   registerConfigRoutes({ app });
+  registerAdminRoutes({ app });
   registerEmailGateMiddleware({ app });
 
   registerEmailGateRoutes({ app });
