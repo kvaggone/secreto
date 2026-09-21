@@ -195,5 +195,63 @@
   "copy": {
     "label": "Copy to clipboard",
     "success": "Copied!"
+  },
+  "admin": {
+    "title": "Admin",
+    "description": "Note activity and email opt-outs.",
+    "sign-out": "Sign out",
+    "refresh": "Refresh",
+    "login": {
+      "title": "Admin sign in",
+      "description": "Sign in with an admin account.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "errors": {
+        "invalid-credentials": "Invalid email or password.",
+        "rate-limited": "Too many attempts. Try again in 15 minutes.",
+        "disabled": "The admin area is not configured on this instance.",
+        "unknown": "Something went wrong. Please try again."
+      }
+    },
+    "database": {
+      "not-configured": "Database is not configured (DATABASE_URL). Statistics and opt-outs are unavailable.",
+      "unavailable": "Database is unavailable. Statistics and opt-outs are temporarily unavailable."
+    },
+    "stats": {
+      "today": "Notes today",
+      "last-7-days": "Last 7 days",
+      "last-30-days": "Last 30 days",
+      "all-time": "All time",
+      "opt-outs": "Opt-outs",
+      "delete-after-reading": "{{ count }} burn after reading",
+      "email-gated": "{{ count }} with email access",
+      "chart-title": "Notes created per day",
+      "chart-description": "Last 30 days, UTC.",
+      "chart-tooltip": "{{ date }}: {{ count }}"
+    },
+    "suppressions": {
+      "title": "Opt-outs",
+      "description": "Addresses that unsubscribed. They receive no emails and can't be added as note recipients.",
+      "search": "Search by email",
+      "email": "Email",
+      "created-at": "Unsubscribed",
+      "actions": "Actions",
+      "remove": "Remove",
+      "empty": "No opt-outs yet.",
+      "empty-search": "Nothing matches this search.",
+      "pagination": "{{ from }}–{{ to }} of {{ total }}",
+      "previous": "Previous",
+      "next": "Next",
+      "remove-dialog": {
+        "title": "Remove from opt-outs?",
+        "description": "{{ email }} will be able to receive access codes again and can be added as a note recipient.",
+        "cancel": "Cancel",
+        "confirm": "Remove"
+      },
+      "removed": "Address removed from opt-outs.",
+      "remove-error": "Could not remove the address.",
+      "load-error": "Could not load opt-outs."
+    }
   }
 }

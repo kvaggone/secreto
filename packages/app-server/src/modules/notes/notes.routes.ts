@@ -2,8 +2,11 @@ import type { ServerInstance } from '../app/server.types';
 import { encryptionAlgorithms, serializationFormats } from '@secreto/lib';
 import { isNil } from 'lodash-es';
 import { z } from 'zod';
+import { recordNoteCreated } from '../admin/note-events.repository';
 import { createUnauthorizedError } from '../app/auth/auth.errors';
 import { protectedRouteMiddleware } from '../app/auth/auth.middleware';
+import { getDb } from '../db/db.client';
+import { runInBackground } from '../shared/env/run-in-background';
 import { validateJsonBody } from '../shared/validation/validation';
 import { ONE_MONTH_IN_SECONDS, TEN_MINUTES_IN_SECONDS } from './notes.constants';
 import { createCannotCreatePrivateNoteOnPublicInstanceError, createExpirationDelayRequiredError, createNotePayloadTooLargeError } from './notes.errors';
@@ -132,6 +135,12 @@ function setupCreateNoteRoute({ app }: { app: ServerInstance }) {
       const notesRepository = createNoteRepository({ storage });
 
       const { noteId } = await notesRepository.saveNote({ payload, ttlInSeconds, deleteAfterReading, encryptionAlgorithm, serializationFormat, isPublic, allowedEmails });
+
+      runInBackground(
+        context,
+        getDb(context).then(db => db && recordNoteCreated({ db, ttlInSeconds, deleteAfterReading, allowedEmailsCount: allowedEmails?.length ?? 0 })),
+        'Failed to record note event',
+      );
 
       return context.json({ noteId });
     },
