@@ -1,4 +1,5 @@
 import { A, type RouteDefinition } from '@solidjs/router';
+import { AdminPage } from './modules/admin/pages/admin.page';
 import { LoginPage } from './modules/auth/pages/login.page';
 import { getConfig } from './modules/config/config.provider';
 import { NOTE_ID_REGEX } from './modules/notes/notes.constants';
@@ -49,6 +50,10 @@ export function getRoutes(): RouteDefinition[] {
     {
       path: '/login',
       component: LoginPage,
+    },
+    {
+      path: '/admin',
+      component: AdminPage,
     },
   ];
 }
