@@ -1,10 +1,12 @@
 import * as crypto from 'node:crypto';
 import { z } from 'zod';
+import { getDb } from '../../db/db.client';
+import { runInBackground } from '../../shared/env/run-in-background';
 import { createNoteRepository } from '../notes.repository';
 import { getRefreshedNote } from '../notes.usecases';
 import { createOtpRepository } from './otp.repository';
 import { issueOtp, verifyOtp } from './otp.usecases';
-import { getEmailGateEnv, runInBackground } from './email-gate.env';
+import { getEmailGateEnv } from './email-gate.env';
 import { sendOtpEmail, sendNoAccessEmail } from './email.services';
 import { isEmailSuppressed, suppressEmail } from './suppression.repository';
 import { verifyUnsubscribeToken } from './unsubscribe.token';
@@ -71,13 +73,14 @@ function registerEmailGateRoutes({ app }: { app: any }) {
 
     const normalizedEmail = email.toLowerCase().trim();
     const env = getEmailGateEnv(c);
+    const db = await getDb(c);
     const allowed: string[] = rawNote.allowedEmails.map((e: string) => e.toLowerCase().trim());
 
     if (!allowed.includes(normalizedEmail)) {
       // 1Password-style: tell the typed address it doesn't have access — but only
       // once per (note, address) per hour, and never to opted-out addresses, to
       // avoid turning this into a spam relay.
-      if (!(await isEmailSuppressed({ env, email: normalizedEmail }))) {
+      if (!(await isEmailSuppressed({ db, email: normalizedEmail }))) {
         const dedupeKey = `noaccess:${noteId}:${crypto.createHash('sha256').update(normalizedEmail).digest('hex').slice(0, 24)}`;
         const alreadyNotified = await (storage as any).getItem(dedupeKey);
         if (!alreadyNotified) {
@@ -89,7 +92,7 @@ function registerEmailGateRoutes({ app }: { app: any }) {
     }
 
     // Respect the suppression list even if the address was allow-listed before opting out.
-    if (await isEmailSuppressed({ env, email: normalizedEmail })) {
+    if (await isEmailSuppressed({ db, email: normalizedEmail })) {
       return c.json({ sent: true });
     }
 
@@ -171,7 +174,7 @@ function registerEmailGateRoutes({ app }: { app: any }) {
       );
     }
 
-    const isSuppressed = await suppressEmail({ env, email });
+    const isSuppressed = await suppressEmail({ db: await getDb(c), email });
 
     if (!isSuppressed) {
       return c.html(
