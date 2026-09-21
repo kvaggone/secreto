@@ -1,3 +1,5 @@
+import type { EmailGateEnv } from './email-gate.env';
+
 export { isEmailSuppressed, suppressEmail };
 
 // Suppression list is stored in Supabase (Postgres) so it can be viewed/edited
@@ -15,9 +17,10 @@ export { isEmailSuppressed, suppressEmail };
 
 const TABLE = 'suppressed_emails';
 
-function getConfig(): { url: string; key: string } | null {
-  const url = process.env.SUPABASE_URL?.replace(/\/$/, '');
-  const key = process.env.SUPABASE_SERVICE_KEY;
+type SuppressionEnv = Pick<EmailGateEnv, 'supabaseUrl' | 'supabaseServiceKey'>;
+
+function getConfig(env: SuppressionEnv): { url: string; key: string } | null {
+  const { supabaseUrl: url, supabaseServiceKey: key } = env;
   if (!url || !key) {
     return null;
   }
@@ -36,9 +39,8 @@ function normalize(email: string): string {
   return email.toLowerCase().trim();
 }
 
-// `storage` is accepted for call-site compatibility but no longer used.
-async function isEmailSuppressed({ email }: { storage?: unknown; email: string }): Promise<boolean> {
-  const config = getConfig();
+async function isEmailSuppressed({ email, env }: { email: string; env: SuppressionEnv }): Promise<boolean> {
+  const config = getConfig(env);
   if (!config) {
     return false;
   }
@@ -60,11 +62,11 @@ async function isEmailSuppressed({ email }: { storage?: unknown; email: string }
   }
 }
 
-async function suppressEmail({ email }: { storage?: unknown; email: string }): Promise<void> {
-  const config = getConfig();
+async function suppressEmail({ email, env }: { email: string; env: SuppressionEnv }): Promise<boolean> {
+  const config = getConfig(env);
   if (!config) {
     console.error('[suppression] Supabase not configured; cannot record opt-out');
-    return;
+    return false;
   }
 
   try {
@@ -81,8 +83,12 @@ async function suppressEmail({ email }: { storage?: unknown; email: string }): P
     if (!res.ok) {
       const body = await res.text().catch(() => '');
       console.error(`[suppression] insert failed: ${res.status} ${body}`);
+      return false;
     }
+
+    return true;
   } catch (err) {
     console.error('[suppression] insert error:', err);
+    return false;
   }
 }
