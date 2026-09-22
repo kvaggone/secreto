@@ -10,6 +10,8 @@ Notes are encrypted client-side before being sent. The server only ever sees cip
 npm install -g secreto-cli
 ```
 
+Requires Node.js 18 or newer.
+
 ## Usage
 
 ### Send a note
@@ -20,6 +22,9 @@ secreto send "Hello, world!"
 
 # Send a file
 secreto send --file secret.txt
+
+# Pipe content in (keeps the secret out of the shell history)
+cat .env | secreto send --stdin
 
 # Set expiration (1h | 1d | 1w | 1m, default: 1d)
 secreto send --ttl 1h "Expires in an hour"
@@ -48,8 +53,27 @@ secreto get "https://secreto.info/abc123#encryptionKey"
 secreto get --password "my-pass" "https://secreto.info/abc123#pw:encryptionKey"
 ```
 
+### Using another instance
+
+By default the CLI talks to `https://secreto.info`. For a self-hosted instance, pass `--instance` or set `SECRETO_INSTANCE_URL`:
+
+```bash
+secreto send "Hello" --instance https://secreto.example.com
+SECRETO_INSTANCE_URL=https://secreto.example.com secreto send "Hello"
+```
+
+`secreto get` takes the instance from the note URL, so notes from any instance work without extra flags.
+
 ### Version
 
 ```bash
 secreto --version
 ```
+
+## Troubleshooting
+
+If a command fails to reach the instance, the CLI explains what went wrong (DNS, refused connection, timeout or TLS). Things to check:
+
+- Node.js 18 or newer: `node --version`
+- the instance is reachable: `curl -sS -o /dev/null -w "%{http_code}\n" https://secreto.info/api/ping`
+- proxies: Node.js ignores `HTTP_PROXY`/`HTTPS_PROXY` unless you run Node 24+ with `NODE_USE_ENV_PROXY=1`
