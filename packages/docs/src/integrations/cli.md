@@ -8,7 +8,7 @@ The Secreto CLI lets you create and read encrypted notes directly from your term
 npm install -g secreto-cli
 ```
 
-Once installed, use the `secreto` command.
+Once installed, use the `secreto` command. Node.js 18 or newer is required.
 
 ## Sending a secret
 
@@ -18,7 +18,7 @@ secreto send "your secret text"
 
 Returns a URL like:
 ```
-https://secreto.info/s/AbCdEf#base64key
+https://secreto.info/AbCdEf#base64key
 ```
 
 The `#fragment` is the decryption key — it never reaches the server. Share the full URL (including `#`) with the recipient.
@@ -27,9 +27,10 @@ The `#fragment` is the decryption key — it never reaches the server. Share the
 
 | Flag | Description | Example |
 |------|-------------|---------|
-| `--ttl <duration>` | Expiry: `1h`, `24h`, `7d` (default: `7d`) | `--ttl 1h` |
+| `--ttl <duration>` | Expiry: `1h`, `1d`, `1w`, `1m` (default: `1d`) | `--ttl 1h` |
 | `--burn` | Delete after first read | `--burn` |
 | `--password <pwd>` | Require password to decrypt | `--password hunter2` |
+| `--instance <url>` | Secreto instance to use (default: `$SECRETO_INSTANCE_URL`, then `https://secreto.info`) | `--instance https://secreto.example.com` |
 
 ### Examples
 
@@ -47,13 +48,13 @@ secreto send "my-secret" --password hunter2
 ## Reading a secret
 
 ```bash
-secreto get "https://secreto.info/s/AbCdEf#base64key"
+secreto get "https://secreto.info/AbCdEf#base64key"
 ```
 
 If password-protected, add `--password`:
 
 ```bash
-secreto get "https://secreto.info/s/AbCdEf#base64key" --password hunter2
+secreto get "https://secreto.info/AbCdEf#base64key" --password hunter2
 ```
 
 ## Using with AI agents (Cursor, Codex, Claude)
