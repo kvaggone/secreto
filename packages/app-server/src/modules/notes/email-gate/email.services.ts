@@ -177,7 +177,7 @@ async function sendOtpEmail({
   const reason = `You're receiving this because this address was added as a recipient of a note on ${BRAND} and an access code was requested.`;
 
   const html = renderHtmlLayout({
-    title: `${code} is your ${BRAND} access code`,
+    title: `Access code - ${code}`,
     // Keep the code early and alone: mail clients detect one-time codes by proximity.
     preheader: `${code} is your access code.`,
     bodyHtml: `
@@ -197,7 +197,7 @@ async function sendOtpEmail({
   });
 
   const text = [
-    `${code} is your ${BRAND} access code.`,
+    `Access code - ${code}`,
     '',
     'Use this code to open the note that was shared with you.',
     '',
@@ -209,7 +209,7 @@ async function sendOtpEmail({
   await sendEmail({
     env,
     to,
-    subject: `${code} is your ${BRAND} access code`,
+    subject: `Access code - ${code}`,
     html,
     text,
     unsubscribeUrl,
