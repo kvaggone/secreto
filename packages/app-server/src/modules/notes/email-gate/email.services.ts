@@ -27,7 +27,6 @@ function renderHtmlLayout({
   bodyHtml,
   reasonHtml,
   unsubscribeUrl,
-  siteUrl,
   siteHost,
 }: {
   title: string;
@@ -35,7 +34,6 @@ function renderHtmlLayout({
   bodyHtml: string;
   reasonHtml: string;
   unsubscribeUrl: string;
-  siteUrl: string;
   siteHost: string;
 }): string {
   return `<!doctype html>
@@ -49,14 +47,13 @@ function renderHtmlLayout({
 <div style="display:none;max-height:0;overflow:hidden">${escapeHtml(preheader)}</div>
 <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:460px;margin:0 auto;padding:24px;color:#111">
   <p style="font-size:14px;font-weight:600;letter-spacing:0.5px;margin:0 0 24px">
-    <a href="${siteUrl}" style="color:#111;text-decoration:none">Secreto</a>
+    SECRETO
   </p>
   ${bodyHtml}
   <hr style="border:none;border-top:1px solid #eee;margin:24px 0 16px" />
   <p style="color:#777;font-size:12px;line-height:1.5;margin:0 0 8px">${reasonHtml}</p>
   <p style="color:#777;font-size:12px;line-height:1.5;margin:0 0 8px">
-    Secreto is an end-to-end encrypted note sharing service operated by AGG at
-    <a href="${siteUrl}" style="color:#555">${escapeHtml(siteHost)}</a>.
+    SECRETO is an end-to-end encrypted note sharing service operated by AGG at ${escapeHtml(siteHost)}.
   </p>
   <p style="color:#777;font-size:12px;line-height:1.5;margin:0">
     Don't want to receive these emails?
@@ -79,7 +76,7 @@ function renderTextFooter({
   return [
     '--',
     reasonText,
-    `Secreto is an end-to-end encrypted note sharing service operated by AGG at ${siteHost}.`,
+    `SECRETO is an end-to-end encrypted note sharing service operated by AGG at ${siteHost}.`,
     `Unsubscribe: ${unsubscribeUrl}`,
   ].join('\n');
 }
@@ -134,8 +131,7 @@ async function sendEmail({
 
 async function sendNoAccessEmail({ to, env }: { to: string; env: EmailGateEnv }): Promise<void> {
   const unsubscribeUrl = buildUnsubscribeUrl(to, env);
-  const siteUrl = env.publicSiteUrl;
-  const siteHost = getSiteHost(siteUrl);
+  const siteHost = getSiteHost(env.publicSiteUrl);
 
   const reasonText = `You're receiving this because ${to} was entered to open a note on ${siteHost}.`;
   const reasonHtml = `You're receiving this because <strong>${escapeHtml(to)}</strong> was entered to open a note on ${escapeHtml(siteHost)}.`;
@@ -155,7 +151,6 @@ async function sendNoAccessEmail({ to, env }: { to: string; env: EmailGateEnv })
   </p>`,
     reasonHtml,
     unsubscribeUrl,
-    siteUrl,
     siteHost,
   });
 
@@ -189,8 +184,7 @@ async function sendOtpEmail({
   env: EmailGateEnv;
 }): Promise<void> {
   const unsubscribeUrl = buildUnsubscribeUrl(to, env);
-  const siteUrl = env.publicSiteUrl;
-  const siteHost = getSiteHost(siteUrl);
+  const siteHost = getSiteHost(env.publicSiteUrl);
 
   const reasonText = `You're receiving this because ${to} was added as a recipient of a note on ${siteHost} and an access code was requested.`;
   const reasonHtml = `You're receiving this because <strong>${escapeHtml(to)}</strong> was added as a recipient of a note on ${escapeHtml(siteHost)} and an access code was requested.`;
@@ -212,7 +206,6 @@ async function sendOtpEmail({
   </p>`,
     reasonHtml,
     unsubscribeUrl,
-    siteUrl,
     siteHost,
   });
 
