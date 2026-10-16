@@ -179,7 +179,7 @@ async function sendOtpEmail({
   const reason = `You're receiving this because this address was added as a recipient of a note on ${BRAND} and a verification code was requested.`;
 
   const html = renderHtmlLayout({
-    title: `${BRAND_TITLE} Verification Code`,
+    title: `${BRAND_TITLE} Verification Code: ${code}`,
     // Mail clients detect one-time codes from the "verification code" wording and a
     // plain `Code: 123456` line, so both are kept close together and free of other numbers.
     preheader: `Verification Code: ${code}`,
@@ -219,7 +219,7 @@ async function sendOtpEmail({
   await sendEmail({
     env,
     to,
-    subject: `${BRAND_TITLE} Verification Code`,
+    subject: `${BRAND_TITLE} Verification Code: ${code}`,
     html,
     text,
     unsubscribeUrl,
