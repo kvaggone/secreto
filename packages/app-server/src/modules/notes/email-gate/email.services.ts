@@ -179,24 +179,23 @@ async function sendOtpEmail({
   const reason = `You're receiving this because this address was added as a recipient of a note on ${BRAND} and a verification code was requested.`;
 
   const html = renderHtmlLayout({
-    title: `${BRAND_TITLE} Verification Code: ${code}`,
+    title: `${BRAND_TITLE} Verification Code`,
     // Mail clients detect one-time codes from the "verification code" wording and a
     // plain `Code: 123456` line, so both are kept close together and free of other numbers.
-    preheader: `Verification Code: ${code}`,
+    preheader: `Your verification code is ${code}.`,
     bodyHtml: `
-  <h1 style="font-size:22px;margin:0 0 16px">Hello!</h1>
-  <p style="color:#222;font-size:15px;font-weight:600;line-height:1.6;margin:0 0 20px">
-    This email contains your verification code to open a private note that was shared
-    with you. Please enter the code on the note page to proceed:
+  <h1 style="font-size:20px;margin:0 0 12px">Your verification code</h1>
+  <p style="color:#444;font-size:15px;line-height:1.5;margin:0 0 20px">
+    This email contains your verification code. Enter it to open the note that was shared with you.
   </p>
-  <p style="color:#222;font-size:17px;font-weight:600;margin:0 0 20px">
-    Verification Code: <span style="color:#2563eb">${escapeHtml(code)}</span>
-  </p>
-  <p style="color:#222;font-size:15px;font-weight:600;line-height:1.6;margin:0 0 8px">
-    Please note that you don't need to reply to this email!
+  <div style="font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:20px;background:#f4f4f5;border-radius:8px;margin:0 0 16px">
+    ${escapeHtml(code)}
+  </div>
+  <p style="font-size:16px;margin:0 0 20px">
+    Code: <strong>${escapeHtml(code)}</strong>
   </p>
   <p style="color:#666;font-size:14px;line-height:1.5;margin:0">
-    The code can be used once and expires in ten minutes. If you did not request it,
+    The code can be used once and expires in ten minutes. If you didn't request it,
     you can safely ignore this email.
   </p>`,
     reasonHtml: reason,
@@ -204,14 +203,13 @@ async function sendOtpEmail({
   });
 
   const text = [
-    'Hello!',
+    `${BRAND_TITLE} Verification Code`,
     '',
-    'This email contains your verification code to open a private note that was shared with you. Please enter the code on the note page to proceed:',
+    'This email contains your verification code. Enter it to open the note that was shared with you.',
     '',
-    `Verification Code: ${code}`,
+    `Code: ${code}`,
     '',
-    'Please note that you don\'t need to reply to this email!',
-    'The code can be used once and expires in ten minutes. If you did not request it, you can safely ignore this email.',
+    'The code can be used once and expires in ten minutes. If you didn\'t request it, you can safely ignore this email.',
     '',
     renderTextFooter({ reasonText: reason, unsubscribeUrl }),
   ].join('\n');
@@ -219,7 +217,7 @@ async function sendOtpEmail({
   await sendEmail({
     env,
     to,
-    subject: `${BRAND_TITLE} Verification Code: ${code}`,
+    subject: `${BRAND_TITLE} Verification Code`,
     html,
     text,
     unsubscribeUrl,
