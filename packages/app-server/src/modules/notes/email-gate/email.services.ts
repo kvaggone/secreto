@@ -184,15 +184,15 @@ async function sendOtpEmail({
     // plain `Code: 123456` line, so both are kept close together and free of other numbers.
     preheader: `Your verification code is ${code}.`,
     bodyHtml: `
-  <h1 style="font-size:20px;margin:0 0 12px">Your verification code</h1>
-  <p style="color:#444;font-size:15px;line-height:1.5;margin:0 0 20px">
-    This email contains your verification code. Enter it to open the note that was shared with you.
+  <h1 style="font-size:20px;margin:0 0 16px">Hello!</h1>
+  <p style="color:#222;font-size:15px;line-height:1.6;margin:0 0 16px">
+    This email contains your verification code!<br />
+    1) Please copy it below<br />
+    2) Go back to the note that was shared with you<br />
+    3) Paste it there to open the note
   </p>
-  <div style="font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:20px;background:#f4f4f5;border-radius:8px;margin:0 0 16px">
-    ${escapeHtml(code)}
-  </div>
-  <p style="font-size:16px;margin:0 0 20px">
-    Code: <strong>${escapeHtml(code)}</strong>
+  <p style="color:#222;font-size:17px;margin:0 0 20px">
+    Code: <strong style="color:#2563eb">${escapeHtml(code)}</strong>
   </p>
   <p style="color:#666;font-size:14px;line-height:1.5;margin:0">
     The code can be used once and expires in ten minutes. If you didn't request it,
@@ -203,9 +203,12 @@ async function sendOtpEmail({
   });
 
   const text = [
-    `${BRAND_TITLE} Verification Code`,
+    'Hello!',
     '',
-    'This email contains your verification code. Enter it to open the note that was shared with you.',
+    'This email contains your verification code!',
+    '1) Please copy it below',
+    '2) Go back to the note that was shared with you',
+    '3) Paste it there to open the note',
     '',
     `Code: ${code}`,
     '',
