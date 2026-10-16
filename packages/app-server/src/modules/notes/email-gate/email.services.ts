@@ -6,6 +6,8 @@ export { sendNoAccessEmail, sendOtpEmail };
 // Mail clients auto-link anything that looks like a domain, so the body refers to the
 // service by name only; the sending identity (EMAIL_FROM) carries the domain.
 const BRAND = 'SECRETO';
+// Title-case form used in subjects, where shouting reads as spam.
+const BRAND_TITLE = 'Secreto';
 
 function escapeHtml(value: string): string {
   return value
@@ -177,7 +179,7 @@ async function sendOtpEmail({
   const reason = `You're receiving this because this address was added as a recipient of a note on ${BRAND} and a verification code was requested.`;
 
   const html = renderHtmlLayout({
-    title: 'Your code for secreto',
+    title: `${BRAND_TITLE} Verification Code`,
     // Mail clients detect one-time codes from the "verification code" wording and a
     // plain `Code: 123456` line, so both are kept close together and free of other numbers.
     preheader: `Your verification code is ${code}.`,
@@ -201,7 +203,7 @@ async function sendOtpEmail({
   });
 
   const text = [
-    'Your verification code',
+    `${BRAND_TITLE} Verification Code`,
     '',
     'This email contains your verification code. Enter it to open the note that was shared with you.',
     '',
@@ -215,7 +217,7 @@ async function sendOtpEmail({
   await sendEmail({
     env,
     to,
-    subject: 'Your code for secreto',
+    subject: `${BRAND_TITLE} Verification Code`,
     html,
     text,
     unsubscribeUrl,
