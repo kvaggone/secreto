@@ -174,20 +174,24 @@ async function sendOtpEmail({
 }): Promise<void> {
   const unsubscribeUrl = buildUnsubscribeUrl(to, env);
 
-  const reason = `You're receiving this because this address was added as a recipient of a note on ${BRAND} and an access code was requested.`;
+  const reason = `You're receiving this because this address was added as a recipient of a note on ${BRAND} and a verification code was requested.`;
 
   const html = renderHtmlLayout({
     title: 'Your code for secreto',
-    // Keep the code early and alone: mail clients detect one-time codes by proximity.
-    preheader: `${code} is your access code.`,
+    // Mail clients detect one-time codes from the "verification code" wording and a
+    // plain `Code: 123456` line, so both are kept close together and free of other numbers.
+    preheader: `Your verification code is ${code}.`,
     bodyHtml: `
-  <h1 style="font-size:20px;margin:0 0 12px">Your access code</h1>
+  <h1 style="font-size:20px;margin:0 0 12px">Your verification code</h1>
   <p style="color:#444;font-size:15px;line-height:1.5;margin:0 0 20px">
-    Use this code to open the note that was shared with you.
+    This email contains your verification code. Enter it to open the note that was shared with you.
   </p>
-  <div style="font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:20px;background:#f4f4f5;border-radius:8px;margin:0 0 20px">
+  <div style="font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:20px;background:#f4f4f5;border-radius:8px;margin:0 0 16px">
     ${escapeHtml(code)}
   </div>
+  <p style="font-size:16px;margin:0 0 20px">
+    Code: <strong>${escapeHtml(code)}</strong>
+  </p>
   <p style="color:#666;font-size:14px;line-height:1.5;margin:0">
     The code can be used once and expires in ten minutes. If you didn't request it,
     you can safely ignore this email.
@@ -197,11 +201,11 @@ async function sendOtpEmail({
   });
 
   const text = [
-    'Your code for secreto',
+    'Your verification code',
     '',
-    'Use this code to open the note that was shared with you:',
+    'This email contains your verification code. Enter it to open the note that was shared with you.',
     '',
-    code,
+    `Code: ${code}`,
     '',
     'The code can be used once and expires in ten minutes. If you didn\'t request it, you can safely ignore this email.',
     '',
