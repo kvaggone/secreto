@@ -188,12 +188,9 @@ async function sendOtpEmail({
   <p style="color:#444;font-size:15px;line-height:1.5;margin:0 0 20px">
     This email contains your verification code. Enter it to open the note that was shared with you.
   </p>
-  <div style="font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:20px;background:#f4f4f5;border-radius:8px;margin:0 0 16px">
+  <div style="font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;padding:20px;background:#f4f4f5;border-radius:8px;margin:0 0 20px">
     ${escapeHtml(code)}
   </div>
-  <p style="font-size:16px;margin:0 0 20px">
-    Code: <strong>${escapeHtml(code)}</strong>
-  </p>
   <p style="color:#666;font-size:14px;line-height:1.5;margin:0">
     The code can be used once and expires in ten minutes. If you didn't request it,
     you can safely ignore this email.
@@ -207,7 +204,7 @@ async function sendOtpEmail({
     '',
     'This email contains your verification code. Enter it to open the note that was shared with you.',
     '',
-    `Code: ${code}`,
+    code,
     '',
     'The code can be used once and expires in ten minutes. If you didn\'t request it, you can safely ignore this email.',
     '',
