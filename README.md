@@ -4,6 +4,8 @@ Share secrets safely. End-to-end encrypted notes that self-destruct — now with
 
 **Live service:** [secreto.info](https://secreto.info)
 
+**Internal documentation (AGG):** [wiki.agg.one › Projects › Secreto](https://wiki.agg.one/doc/secreto-R6YrmQz6Dz) — architecture, operations, change history.
+
 ---
 
 ## What is Secreto?
