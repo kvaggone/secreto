@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "@corentinth/chisels": "catalog:",
-    "@secreto/lib": "workspace:*",
     "@kobalte/core": "^0.13.4",
+    "@secreto/lib": "workspace:*",
     "@solid-primitives/i18n": "^2.1.1",
     "@solid-primitives/storage": "^4.2.1",
     "@solidjs/router": "^0.14.3",
@@ -39,7 +39,7 @@
     "clsx": "^2.1.1",
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
-    "solid-js": "^1.9.5",
+    "solid-js": "^1.9.20",
     "solid-sonner": "^0.2.8",
     "tailwind-merge": "^2.5.2",
     "unocss-preset-animations": "^1.1.0",
@@ -56,7 +56,7 @@
     "tsx": "^4.19.3",
     "typescript": "catalog:",
     "unocss": "^0.64.0",
-    "vite": "^5.0.11",
+    "vite": "^6.4.6",
     "vite-plugin-solid": "^2.11.6",
     "vitest": "catalog:"
   }

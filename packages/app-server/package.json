@@ -29,19 +29,19 @@
   },
   "dependencies": {
     "@corentinth/chisels": "catalog:",
-    "@hono/node-server": "^1.12.1",
+    "@hono/node-server": "^1.19.19",
     "@secreto/lib": "workspace:*",
     "bcryptjs": "^2.4.3",
     "date-fns": "^4.0.0",
     "figue": "^2.1.0",
-    "hono": "^4.5.8",
+    "hono": "^4.13.22",
     "lodash-es": "^4.17.21",
     "node-cron": "^3.0.3",
     "pino": "^9.3.2",
     "postgres": "^3.4.5",
     "ulid-workers": "^2.1.0",
-    "unstorage": "^1.10.2",
-    "zod": "^3.23.8"
+    "unstorage": "^1.17.6",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
