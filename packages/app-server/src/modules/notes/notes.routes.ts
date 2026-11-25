@@ -107,9 +107,16 @@ function setupCreateNoteRoute({ app }: { app: ServerInstance }) {
         serializationFormat: z.enum(serializationFormats),
 
         isPublic: z.boolean().optional().default(true),
-        // Bounded before the element-wise check, so an oversized list is rejected
-        // without validating every address in it.
-        allowedEmails: z.array(z.unknown()).max(MAX_ALLOWED_EMAILS).pipe(z.array(z.string().email())).optional(),
+        // Trimmed before validation: zod walks every element of an array before it
+        // applies a length constraint, so a huge list costs time proportional to its
+        // size even when the schema rejects it. Keeping one element past the limit
+        // makes the list fail the same check, having looked at a handful of values.
+        allowedEmails: z.preprocess(
+          value => (Array.isArray(value) && value.length > MAX_ALLOWED_EMAILS
+            ? value.slice(0, MAX_ALLOWED_EMAILS + 1)
+            : value),
+          z.array(z.string().email()).max(MAX_ALLOWED_EMAILS).optional(),
+        ),
       }),
     ),
 

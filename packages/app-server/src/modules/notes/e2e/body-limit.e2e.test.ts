@@ -47,6 +47,30 @@ describe('e2e', () => {
       expect(JSON.stringify(body).length).toBeLessThan(2000);
     });
 
+    test('an oversized recipient list is rejected without walking the whole list', async () => {
+      const { app } = createTestServer();
+      const body = JSON.stringify({
+        payload: 'aaaaaaaa',
+        deleteAfterReading: false,
+        ttlInSeconds: 3600,
+        encryptionAlgorithm: 'aes-256-gcm',
+        serializationFormat: 'cbor-array',
+        allowedEmails: Array.from({ length: 200000 }, (_, index) => `not-an-email-${index}`),
+      });
+
+      const startedAt = Date.now();
+      const response = await app.request('/api/notes', {
+        method: 'POST',
+        body,
+        headers: { 'Content-Type': 'application/json', 'Content-Length': String(body.length) },
+      });
+      const elapsedMs = Date.now() - startedAt;
+
+      expect(response.status).to.eql(400);
+      // Walking every element took seconds and tripped the request timeout in production.
+      expect(elapsedMs).toBeLessThan(1000);
+    });
+
     test('a normal note is still accepted', async () => {
       const { app } = createTestServer();
 
