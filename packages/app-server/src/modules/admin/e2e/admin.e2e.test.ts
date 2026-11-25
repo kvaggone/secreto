@@ -125,6 +125,23 @@ describe('e2e', () => {
         expect(list.total).to.eql(1);
         expect(list.items[0].email).to.eql(email);
 
+        // An opted-out address cannot be used as a recipient, and the whole list is
+        // checked in one query rather than one per address.
+        const blocked = await app.request('/api/notes', {
+          method: 'POST',
+          body: JSON.stringify({
+            payload: 'aaaaaaaa',
+            deleteAfterReading: false,
+            ttlInSeconds: 3600,
+            encryptionAlgorithm: 'aes-256-gcm',
+            serializationFormat: 'cbor-array',
+            allowedEmails: ['someone-else@example.com', email],
+          }),
+          headers: { 'Content-Type': 'application/json' },
+        }, env);
+        expect(blocked.status).to.eql(400);
+        expect((await blocked.json<any>()).error.code).to.eql('email.suppressed');
+
         const deleteResponse = await app.request(`/api/admin/suppressions/${encodeURIComponent(email)}`, { method: 'DELETE', headers: { cookie } }, env);
         expect(deleteResponse.status).to.eql(200);
 
