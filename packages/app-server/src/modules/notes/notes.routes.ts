@@ -86,6 +86,8 @@ function setupGetNoteExistsRoute({ app }: { app: ServerInstance }) {
   );
 }
 
+const MAX_ALLOWED_EMAILS = 20;
+
 function setupCreateNoteRoute({ app }: { app: ServerInstance }) {
   app.post(
     '/api/notes',
@@ -105,7 +107,9 @@ function setupCreateNoteRoute({ app }: { app: ServerInstance }) {
         serializationFormat: z.enum(serializationFormats),
 
         isPublic: z.boolean().optional().default(true),
-      allowedEmails: z.array(z.string().email()).max(20).optional(),
+        // Bounded before the element-wise check, so an oversized list is rejected
+        // without validating every address in it.
+        allowedEmails: z.array(z.unknown()).max(MAX_ALLOWED_EMAILS).pipe(z.array(z.string().email())).optional(),
       }),
     ),
 
