@@ -10,6 +10,7 @@ import { registerNotesRoutes } from '../notes/notes.routes';
 import { authenticationMiddleware } from './auth/auth.middleware';
 import { registerAuthRoutes } from './auth/auth.routes';
 import { registerConfigRoutes } from './config/config.routes';
+import { registerHealthRoutes } from './health/health.routes';
 import { createBodyLimitMiddleware } from './middlewares/body-limit.middleware';
 import { createConfigMiddleware } from './middlewares/config.middleware';
 import { corsMiddleware } from './middlewares/cors.middleware';
@@ -64,6 +65,8 @@ function createServer({ config, storageFactory }: { config?: Config; storageFact
   registerEmailGateRoutes({ app });
 
   registerNotesRoutes({ app });
+
+  registerHealthRoutes({ app });
 
   app.get('/api/ping', context => context.json({ status: 'ok' }));
 
