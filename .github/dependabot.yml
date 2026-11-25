@@ -1,0 +1,40 @@
+version: 2
+
+updates:
+  # Application dependencies. The pnpm workspace is resolved from the root lockfile,
+  # so one entry covers every package under packages/.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Moscow
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore(deps)
+      prefix-development: chore(deps-dev)
+    groups:
+      # Routine upgrades arrive as one pull request a week instead of a dozen.
+      # Security updates are opened separately and immediately, outside this schedule.
+      production:
+        dependency-type: production
+        update-types: [minor, patch]
+      development:
+        dependency-type: development
+        update-types: [minor, patch]
+    ignore:
+      # Major upgrades are reviewed by hand: they have broken the scheduler and
+      # the build before.
+      - dependency-name: "*"
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore(ci)
+    groups:
+      actions:
+        patterns: ["*"]
