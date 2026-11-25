@@ -1,6 +1,6 @@
 import type { Db } from '../../db/db.client';
 
-export { isEmailSuppressed, listSuppressedEmails, suppressEmail, unsuppressEmail };
+export { findSuppressedEmails, isEmailSuppressed, listSuppressedEmails, suppressEmail, unsuppressEmail };
 
 // Suppression list (recipients who opted out) lives in the `suppressed_emails` table.
 // Lookups FAIL SAFE: without a database, addresses are treated as "not suppressed"
@@ -21,6 +21,26 @@ async function isEmailSuppressed({ email, db }: { email: string; db: Db | null }
   } catch (err) {
     console.error('[suppression] lookup error:', err);
     return false;
+  }
+}
+
+/**
+ * Looks up a whole list in one query. Checking addresses one at a time means a
+ * round trip per address, which an unauthenticated caller can multiply at will.
+ */
+async function findSuppressedEmails({ emails, db }: { emails: string[]; db: Db | null }): Promise<Set<string>> {
+  if (!db || emails.length === 0) {
+    return new Set();
+  }
+
+  const normalized = [...new Set(emails.map(normalize))];
+
+  try {
+    const rows = await db<{ email: string }[]>`select email from suppressed_emails where email = any(${normalized})`;
+    return new Set(rows.map(row => row.email));
+  } catch (err) {
+    console.error('[suppression] batch lookup error:', err);
+    return new Set();
   }
 }
 
