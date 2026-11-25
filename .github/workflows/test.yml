@@ -1,0 +1,41 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# A new push supersedes the run still going for the same branch.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # @secreto/crypto and @secreto/lib resolve through ./dist, which their own
+      # `prepare` script builds — and `--ignore-scripts` skips it. Without this,
+      # 8 app-server test files die on "Failed to resolve entry for package".
+      - name: Build workspace packages the tests import
+        run: |
+          pnpm --filter @secreto/crypto run build
+          pnpm --filter @secreto/lib run build
+
+      - name: Test
+        run: pnpm -r run test
