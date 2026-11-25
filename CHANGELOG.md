@@ -2,6 +2,18 @@
 
 Handoff-quality history of pushed work, newest first. Operational facts that outlive a single release — architecture, deployment, secrets inventory — live in the private deployment repository and in [the self-hosting docs](packages/docs/src/self-hosting/configuration.md).
 
+## e83b8a8 - Health Endpoint For Delivery And Database
+
+**Date:** 2026-11-25 13:24 Europe/Moscow
+**Author:** kv@agg.one
+**Context:** Access-code emails are sent in the background and their errors are deliberately kept from the caller, so a sending failure is invisible from outside the server — the September outage had an API key that was no longer authorised for the sender domain while the API kept answering `{ sent: true }`. The database behind the opt-out list has the same property: it can be unreachable while notes keep working. `/api/ping` proves only that the process answers.
+**Changed:** Added `GET /api/health`, reporting database status and email delivery health and answering `503` when either is degraded, so an uptime check can watch the status code alone. `database` separates `not-configured`, a supported setup, from `unavailable`. `email.status` is `degraded` while a send has failed in the last 15 minutes without a later one succeeding, which tells a transient provider error from a key that keeps being rejected, and `unknown` before anything has been sent, so a quiet instance does not read as an outage. Send outcomes are recorded in memory as counters and timestamps only — no addresses, no provider messages.
+**Files:** `packages/app-server/src/modules/app/health/`, `packages/app-server/src/modules/app/server.ts`, `packages/app-server/src/modules/notes/email-gate/email.services.ts`, `packages/docs/src/self-hosting/troubleshooting.md`.
+**Reasoning:** The failure mode that cost the most time so far was silent, and nothing outside the container could see it. One endpoint that the existing monitoring can poll turns that class of outage into an alert instead of a user report.
+**Verification:** Twelve tests cover the state machine and the endpoint, including that the response carries neither an address nor the provider name, and that ordering of a failure and a delivery in the same millisecond is decided by order of arrival rather than by timestamp — a defect the tests found in the first implementation, which compared timestamps. Checked on the deployed instance: `status: ok` with `database: ok`, then a real access-code request moved `deliveries` to 1 with no failures. External checks now poll this endpoint.
+**Risks:** Counters live in memory and reset on restart, so a failure before a restart is forgotten; the 15-minute window means a single transient provider error can raise an alert that clears itself on the next successful send. Two tests in the server package (`notes.models` formatting and one authenticated e2e case) fail on `main` independently of this change.
+**Next steps:** None outstanding.
+
 ## 18db662 - Access-Code Email Wording And Layout
 
 **Date:** 2026-10-17 00:08 Europe/Moscow
