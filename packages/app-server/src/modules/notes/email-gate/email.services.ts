@@ -1,4 +1,5 @@
 import type { EmailGateEnv } from './email-gate.env';
+import { recordEmailFailure, recordEmailSuccess } from '../../app/health/health.state';
 import { buildUnsubscribeUrl } from './unsubscribe.token';
 
 export { sendNoAccessEmail, sendOtpEmail };
@@ -93,34 +94,48 @@ async function sendEmail({
   const { resendApiKey: apiKey, emailFrom: from, emailReplyTo: replyTo } = env;
 
   if (!apiKey) {
+    recordEmailFailure();
     throw new Error('RESEND_API_KEY is not configured');
   }
 
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      ...(replyTo ? { reply_to: replyTo } : {}),
-      subject,
-      // Standard one-click unsubscribe header — helps inbox providers and reputation.
+  // Every outcome is recorded for /api/health: these errors never reach the caller,
+  // so the health check is the only thing that can notice them.
+  let response: Response;
+
+  try {
+    response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
       headers: {
-        'List-Unsubscribe': `<${unsubscribeUrl}>`,
-        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
       },
-      html,
-      text,
-    }),
-  });
+      body: JSON.stringify({
+        from,
+        to: [to],
+        ...(replyTo ? { reply_to: replyTo } : {}),
+        subject,
+        // Standard one-click unsubscribe header — helps inbox providers and reputation.
+        headers: {
+          'List-Unsubscribe': `<${unsubscribeUrl}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
+        html,
+        text,
+      }),
+    });
+  } catch (err) {
+    // Transport failure: DNS, connection, TLS, or the request timing out.
+    recordEmailFailure();
+    throw err;
+  }
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
+    recordEmailFailure();
     throw new Error(`Resend API error ${response.status}: ${body}`);
   }
+
+  recordEmailSuccess();
 }
 
 async function sendNoAccessEmail({ to, env }: { to: string; env: EmailGateEnv }): Promise<void> {
