@@ -1,5 +1,6 @@
-import * as crypto from 'node:crypto';
 import type { Storage } from '../../storage/storage.types';
+import { Buffer } from 'node:buffer';
+import * as crypto from 'node:crypto';
 import { injectArguments } from '@corentinth/chisels';
 
 export { createOtpRepository, verifyCode };

@@ -1,4 +1,4 @@
-name: Tests
+name: Checks
 
 on:
   pull_request:
@@ -8,15 +8,24 @@ on:
 
 # A new push supersedes the run still going for the same branch.
 concurrency:
-  group: tests-${{ github.ref }}
+  group: checks-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
+
+    # One job per task, so a lint failure does not hide the test results.
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [lint, typecheck, test]
+
+    name: ${{ matrix.task }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -29,13 +38,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile --ignore-scripts
 
-      # @secreto/crypto and @secreto/lib resolve through ./dist, which their own
-      # `prepare` script builds — and `--ignore-scripts` skips it. Without this,
-      # 8 app-server test files die on "Failed to resolve entry for package".
-      - name: Build workspace packages the tests import
+      # @secreto/crypto and @secreto/lib are consumed through ./dist, built by
+      # their own `prepare` script — which `--ignore-scripts` skips. Without
+      # this, 8 app-server test files die on "Failed to resolve entry for
+      # package", and the same import fails to typecheck.
+      - name: Build workspace packages
         run: |
           pnpm --filter @secreto/crypto run build
           pnpm --filter @secreto/lib run build
 
-      - name: Test
-        run: pnpm -r run test
+      - run: pnpm -r run ${{ matrix.task }}

@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    // Not "Node": the test files import vitest, which drags in vite's types,
+    // and node10 resolution cannot read rollup's "exports" map.
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true
   },

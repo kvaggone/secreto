@@ -1,11 +1,10 @@
-import { Button } from '@/modules/ui/components/button';
 import { TextField } from '@/modules/ui/components/textfield';
 import { type Component, createSignal, For } from 'solid-js';
 
 const MAX_EMAILS = 20;
 
 function isValidEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  return /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/.test(value);
 }
 
 export const EmailAllowlistField: Component<{
@@ -78,7 +77,11 @@ export const EmailAllowlistField: Component<{
           value={getInput()}
           onInput={e => setInput(e.currentTarget.value)}
           onKeyDown={handleKeyDown}
-          onBlur={() => { if (getInput()) addEmail(getInput()); }}
+          onBlur={() => {
+            if (getInput()) {
+              addEmail(getInput());
+            }
+          }}
           class="border-none shadow-none focus-visible:ring-0 flex-1 min-w-32 h-7 text-sm p-0"
           disabled={props.getEmails().length >= MAX_EMAILS}
           data-test-id={props.dataTestId}
