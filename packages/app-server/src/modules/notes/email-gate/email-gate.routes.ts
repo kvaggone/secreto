@@ -4,10 +4,10 @@ import { getDb } from '../../db/db.client';
 import { runInBackground } from '../../shared/env/run-in-background';
 import { createNoteRepository } from '../notes.repository';
 import { getRefreshedNote } from '../notes.usecases';
+import { sendNoAccessEmail, sendOtpEmail } from './email.services';
+import { getEmailGateEnv } from './email-gate.env';
 import { createOtpRepository } from './otp.repository';
 import { issueOtp, verifyOtp } from './otp.usecases';
-import { getEmailGateEnv } from './email-gate.env';
-import { sendOtpEmail, sendNoAccessEmail } from './email.services';
 import { isEmailSuppressed, suppressEmail } from './suppression.repository';
 import { verifyUnsubscribeToken } from './unsubscribe.token';
 
@@ -188,7 +188,7 @@ function registerEmailGateRoutes({ app }: { app: any }) {
 
     return c.html(
       unsubscribePage({
-        title: "You're unsubscribed",
+        title: 'You\'re unsubscribed',
         message: 'All good — we won\'t send access codes to this address anymore, and it can no longer be used as a note recipient. If you believe this was a mistake, contact support@agg.one.',
       }),
     );

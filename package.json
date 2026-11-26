@@ -31,5 +31,10 @@
   ],
   "devDependencies": {
     "bumpp": "^9.5.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "^6.4.6"
+    }
   }
 }

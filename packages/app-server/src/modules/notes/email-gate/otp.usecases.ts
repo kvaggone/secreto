@@ -1,5 +1,6 @@
+import type { createOtpRepository } from './otp.repository';
 import * as crypto from 'node:crypto';
-import { createOtpRepository, verifyCode } from './otp.repository';
+import { verifyCode } from './otp.repository';
 
 export { issueOtp, verifyOtp };
 export const MAX_OTP_ATTEMPTS = 5;

@@ -193,7 +193,11 @@ const EmailGateForm: Component<{
                 <Button
                   variant="ghost"
                   class="w-full mt-2 text-muted-foreground text-sm"
-                  onClick={() => { setStep('email'); setCode(''); setIsCodeInvalid(false); }}
+                  onClick={() => {
+                    setStep('email');
+                    setCode('');
+                    setIsCodeInvalid(false);
+                  }}
                 >
                   {t('view.verify-code.resend')}
                 </Button>
@@ -273,33 +277,47 @@ export const ViewNotePage: Component = () => {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     const parts: string[] = [];
-    if (days > 0) parts.push(`${days}d`);
-    if (days > 0 || hours > 0) parts.push(`${pad(hours)}h`);
+    if (days > 0) {
+      parts.push(`${days}d`);
+    }
+    if (days > 0 || hours > 0) {
+      parts.push(`${pad(hours)}h`);
+    }
     parts.push(`${pad(minutes)}m`, `${pad(seconds)}s`);
     return parts.join(' ');
   };
 
   // Full single-line label, used on desktop.
   const formatRemaining = (ms: number): string => {
-    if (ms <= 0) return t('view.lifetime.expired');
+    if (ms <= 0) {
+      return t('view.lifetime.expired');
+    }
     return t('view.lifetime.expires-in', { time: formatTimeString(ms) });
   };
 
   // Human-readable note lifetime, shown next to the content.
   const getLifetimeText = () => {
-    if (getIsDeletedAfterReading()) return t('view.lifetime.delete-after-reading');
+    if (getIsDeletedAfterReading()) {
+      return t('view.lifetime.delete-after-reading');
+    }
     const expiration = getExpirationDate();
-    if (expiration) return formatRemaining(new Date(expiration).getTime() - getNow());
+    if (expiration) {
+      return formatRemaining(new Date(expiration).getTime() - getNow());
+    }
     return t('view.lifetime.never');
   };
 
   // For mobile two-line display: { label, time? }
   const getLifetimeParts = (): { label: string; time?: string } => {
-    if (getIsDeletedAfterReading()) return { label: t('view.lifetime.delete-after-reading') };
+    if (getIsDeletedAfterReading()) {
+      return { label: t('view.lifetime.delete-after-reading') };
+    }
     const expiration = getExpirationDate();
     if (expiration) {
       const ms = new Date(expiration).getTime() - getNow();
-      if (ms <= 0) return { label: t('view.lifetime.expired') };
+      if (ms <= 0) {
+        return { label: t('view.lifetime.expired') };
+      }
       return { label: 'Will be purged', time: formatTimeString(ms) };
     }
     return { label: t('view.lifetime.never') };

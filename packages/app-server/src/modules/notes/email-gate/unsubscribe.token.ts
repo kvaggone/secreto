@@ -1,7 +1,8 @@
 import type { EmailGateEnv } from './email-gate.env';
+import { Buffer } from 'node:buffer';
 import * as crypto from 'node:crypto';
 
-export { makeUnsubscribeToken, verifyUnsubscribeToken, buildUnsubscribeUrl };
+export { buildUnsubscribeUrl, makeUnsubscribeToken, verifyUnsubscribeToken };
 
 type UnsubscribeEnv = Pick<EmailGateEnv, 'unsubscribeSecret' | 'publicSiteUrl'>;
 
