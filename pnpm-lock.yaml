@@ -139,8 +139,8 @@ importers:
         specifier: 'catalog:'
         version: 1.2.1
       '@hono/node-server':
-        specifier: ^1.19.19
-        version: 1.19.19(hono@4.13.22)
+        specifier: ^2.1.6
+        version: 2.1.11(hono@4.13.22)
       '@secreto/lib':
         specifier: workspace:*
         version: link:../lib
@@ -1707,11 +1707,11 @@ packages:
   '@floating-ui/utils@0.2.8':
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
 
-  '@hono/node-server@1.19.19':
-    resolution: {integrity: sha512-Fy9R7PACOzHU9LDpfnuzVyuVYevKQRcEG2mZhmfc+DRdmayEd3RVfa2XOt2IgGcPNgA77Yk63KBszepcMFK5Ng==}
-    engines: {node: '>=18.14.1'}
+  '@hono/node-server@2.1.11':
+    resolution: {integrity: sha512-KzKz9vl4vvr1vgLHamj+g5uonbrj5NwAdO3yzOS6cd2HjALVeOgTgeZOyAzNxejbkfOOPIcvuf/Tg8l1pEFLog==}
+    engines: {node: '>=20'}
     peerDependencies:
-      hono: ^4
+      hono: ^4 || ^5.0.0-0
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -6793,7 +6793,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.8': {}
 
-  '@hono/node-server@1.19.19(hono@4.13.22)':
+  '@hono/node-server@2.1.11(hono@4.13.22)':
     dependencies:
       hono: 4.13.22
 
