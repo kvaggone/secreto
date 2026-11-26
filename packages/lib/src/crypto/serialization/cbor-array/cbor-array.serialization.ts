@@ -6,7 +6,14 @@ export const cborArraySerializationDefinition = defineSerializationMethods({
   name: 'cbor-array',
 
   serializeNote: async ({ note }) => {
-    const noteBuffer = encode([note.content, note.assets.map(({ content, metadata }) => ([metadata, content]))]);
+    // `encode` returns a small view onto one large ArrayBuffer that cbor-x
+    // shares across calls, so that buffer still holds the plaintext of notes
+    // serialized before this one. Copying the bytes out leaves a buffer this
+    // note alone owns, and gives WebCrypto the ArrayBuffer-backed view its
+    // types require.
+    const encoded = encode([note.content, note.assets.map(({ content, metadata }) => ([metadata, content]))]);
+    const noteBuffer = new Uint8Array(encoded);
+
     return { noteBuffer };
   },
 

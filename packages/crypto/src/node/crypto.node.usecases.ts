@@ -12,29 +12,33 @@ function bufferToBase64Url({ buffer }: { buffer: Uint8Array }): string {
   return base64Url;
 }
 
-function base64UrlToBuffer({ base64Url }: { base64Url: string }): Uint8Array {
+function base64UrlToBuffer({ base64Url }: { base64Url: string }): Uint8Array<ArrayBuffer> {
   const buffer = Buffer.from(base64Url, 'base64url');
 
   return new Uint8Array(buffer);
 }
 
-function generateBaseKey(): { baseKey: Uint8Array } {
+function generateBaseKey(): { baseKey: Uint8Array<ArrayBuffer> } {
   return { baseKey: createRandomBuffer({ length: 32 }) };
 }
 
-function createRandomBuffer({ length = 16 }: { length?: number } = {}): Uint8Array {
-  const randomValues = randomBytes(length);
+function createRandomBuffer({ length = 16 }: { length?: number } = {}): Uint8Array<ArrayBuffer> {
+  // `randomBytes` hands back a Buffer, which may be a view onto Node's shared
+  // internal pool. Copying the bytes out gives the plain, solely-owned
+  // ArrayBuffer that WebCrypto's types ask for. These buffers are key-sized,
+  // so the copy is a handful of bytes.
+  const randomValues = new Uint8Array(randomBytes(length));
 
   return randomValues;
 }
 
-async function deriveMasterKey({ baseKey, password = '' }: { baseKey: Uint8Array; password?: string }): Promise<{ masterKey: Uint8Array }> {
+async function deriveMasterKey({ baseKey, password = '' }: { baseKey: Uint8Array<ArrayBuffer>; password?: string }): Promise<{ masterKey: Uint8Array<ArrayBuffer> }> {
   const passwordBuffer = new TextEncoder().encode(password);
   const mergedBuffers = new Uint8Array([...baseKey, ...passwordBuffer]);
 
-  const masterKey = await deriveWithPbkdf2(mergedBuffers, baseKey, 100_000, 32, 'sha256');
+  const derivedKey = await deriveWithPbkdf2(mergedBuffers, baseKey, 100_000, 32, 'sha256');
 
   return {
-    masterKey,
+    masterKey: new Uint8Array(derivedKey),
   };
 }

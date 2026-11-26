@@ -7,9 +7,9 @@ function createSecretoCryptoApi({
   encryptionMethodDefinitions,
   ...api
 }: {
-  generateBaseKey: () => { baseKey: Uint8Array };
-  deriveMasterKey: ({ baseKey, password }: { baseKey: Uint8Array; password?: string }) => Promise<{ masterKey: Uint8Array }>;
-  base64UrlToBuffer: ({ base64Url }: { base64Url: string }) => Uint8Array;
+  generateBaseKey: () => { baseKey: Uint8Array<ArrayBuffer> };
+  deriveMasterKey: ({ baseKey, password }: { baseKey: Uint8Array<ArrayBuffer>; password?: string }) => Promise<{ masterKey: Uint8Array<ArrayBuffer> }>;
+  base64UrlToBuffer: ({ base64Url }: { base64Url: string }) => Uint8Array<ArrayBuffer>;
   bufferToBase64Url: ({ buffer }: { buffer: Uint8Array }) => string;
   encryptionMethodDefinitions: EncryptionAlgorithmDefinitions;
 }) {

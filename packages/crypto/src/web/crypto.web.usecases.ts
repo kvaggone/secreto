@@ -17,7 +17,7 @@ function bufferToBase64Url({ buffer }: { buffer: Uint8Array }): string {
   return base64Url;
 }
 
-function base64UrlToBuffer({ base64Url }: { base64Url: string }): Uint8Array {
+function base64UrlToBuffer({ base64Url }: { base64Url: string }): Uint8Array<ArrayBuffer> {
   const base64 = base64Url
     .padEnd(base64Url.length + (4 - base64Url.length % 4) % 4, '=')
     .replace(/-/g, '+')
@@ -28,18 +28,18 @@ function base64UrlToBuffer({ base64Url }: { base64Url: string }): Uint8Array {
   return buffer;
 }
 
-function createRandomBuffer({ length = 16 }: { length?: number } = {}): Uint8Array {
+function createRandomBuffer({ length = 16 }: { length?: number } = {}): Uint8Array<ArrayBuffer> {
   const randomValues = new Uint8Array(length);
   crypto.getRandomValues(randomValues);
 
   return randomValues;
 }
 
-function generateBaseKey(): { baseKey: Uint8Array } {
+function generateBaseKey(): { baseKey: Uint8Array<ArrayBuffer> } {
   return { baseKey: createRandomBuffer({ length: 32 }) };
 }
 
-async function deriveMasterKey({ baseKey, password = '' }: { baseKey: Uint8Array; password?: string }) {
+async function deriveMasterKey({ baseKey, password = '' }: { baseKey: Uint8Array<ArrayBuffer>; password?: string }) {
   const passwordBuffer = new TextEncoder().encode(password);
   const mergedBuffers = new Uint8Array([...baseKey, ...passwordBuffer]);
 

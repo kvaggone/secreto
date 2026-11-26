@@ -6,7 +6,7 @@ export type NoteAsset = {
     type: string;
     [key: string]: unknown ;
   };
-  content: Uint8Array;
+  content: Uint8Array<ArrayBuffer>;
 };
 
 export type Note = {
