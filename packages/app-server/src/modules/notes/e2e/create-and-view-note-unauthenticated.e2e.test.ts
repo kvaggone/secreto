@@ -2,6 +2,7 @@ import { omit } from 'lodash-es';
 import { describe, expect, test } from 'vitest';
 import { createServer } from '../../app/server';
 import { createMemoryStorage } from '../../storage/factories/memory.storage';
+import { expectExpiresInAbout } from '../notes.test-utils';
 
 describe('e2e', () => {
   describe('create and view note with authentication disabled (public instance)', () => {
@@ -47,6 +48,7 @@ describe('e2e', () => {
         encryptionAlgorithm: 'aes-256-gcm',
         serializationFormat: 'cbor-array',
       });
+      expectExpiresInAbout({ expirationDate: retrievedNote.expirationDate, ttlInSeconds: 600 });
     });
 
     test('an enregistered serialization format results in a bad request', async () => {

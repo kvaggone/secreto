@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { overrideConfig } from '../../app/config/config.test-utils';
 import { createServer } from '../../app/server';
 import { createMemoryStorage } from '../../storage/factories/memory.storage';
+import { expectExpiresInAbout } from '../notes.test-utils';
 
 describe('e2e', () => {
   describe('create and view note with authentication enabled', () => {
@@ -62,6 +63,7 @@ describe('e2e', () => {
           encryptionAlgorithm: 'aes-256-gcm',
           serializationFormat: 'cbor-array',
         });
+        expectExpiresInAbout({ expirationDate: retrievedNote.expirationDate, ttlInSeconds: 600 });
       });
 
       test('a private note can be created when authenticated and viewed only by authenticated users', async () => {
@@ -117,13 +119,15 @@ describe('e2e', () => {
         });
 
         expect(viewNoteAuthResponse.status).to.eql(200);
-        expect(await viewNoteAuthResponse.json()).to.eql({
-          note: {
-            payload: '<encrypted-content>',
-            encryptionAlgorithm: 'aes-256-gcm',
-            serializationFormat: 'cbor-array',
-          },
+
+        const { note: retrievedPrivateNote } = await viewNoteAuthResponse.json<any>();
+
+        expect(omit(retrievedPrivateNote, 'expirationDate')).to.eql({
+          payload: '<encrypted-content>',
+          encryptionAlgorithm: 'aes-256-gcm',
+          serializationFormat: 'cbor-array',
         });
+        expectExpiresInAbout({ expirationDate: retrievedPrivateNote.expirationDate, ttlInSeconds: 600 });
       });
     });
   });
